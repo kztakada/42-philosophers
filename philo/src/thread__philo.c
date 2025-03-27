@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/27 19:49:19 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 00:35:32 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ static bool	try_to_eat(int id)
 	// 死亡確認ブロック
 	if (survival_time > SURVIVAL_TIME_PER_MEAL)
 	{
-		printf("Philosopher %d has starved to death. survival_time: %lld\n", id,
-			survival_time);
+		// 死亡ログを出力していない場合、死亡ログを出力する
 		pthread_mutex_lock(&m_mutex);
-		is_finished = true;
+		// printf("philo %d call\n", id + 1);
+		print_dead_log_once(current_time_ms, id);
 		pthread_mutex_unlock(&m_mutex);
 		pthread_mutex_unlock(philosophers[id].p_mutex);
 		return (false);
@@ -76,17 +76,23 @@ static bool	try_to_eat(int id)
 		// 1本目を取得する
 		pthread_mutex_lock(philosophers[id].left_fork);
 		print_log_if_alive(id, "has taken a fork");
+		// if (!print_log_if_alive(id, "has taken a fork"))
+		// 	return (false);
 		if (true) // TODO：この間に死亡確認して、死んでいるか？
 		{
 			// 両方のフォークを取得できた場合
 			pthread_mutex_lock(philosophers[id].right_fork);
 			print_log_if_alive(id, "has taken a fork");
+			// if (!print_log_if_alive(id, "has taken a fork"))
+			// 	return (false);
 			pthread_mutex_lock(philosophers[id].p_mutex);
 			philosophers[id].state = EATING;
 			philosophers[id].wait_start_us = 0;
 			philosophers[id].last_meal_satart_time = get_time_in_us() / 1000;
 			pthread_mutex_unlock(philosophers[id].p_mutex);
 			print_log_if_alive(id, "is eating");
+			// if (!print_log_if_alive(id, "is eating"))
+			// 	return (false);
 			// printf("Philosopher %d is eating meal %d\n", id,
 			// 	philosophers[id].meals_eaten + 1);
 			result = true;
@@ -141,20 +147,22 @@ void	*philosopher_routine(void *arg)
 	self = (t_philo *)arg;
 	id = self->id;
 	// バリア待機
-	barrier_wait(&barrier, id);
+	barrier_wait_for_philo(&barrier, id);
 	// 次回の食事時間を初期化
 	pthread_mutex_lock(philosophers[id].p_mutex);
 	philosophers[id].next_meal_time = calc_initial_eat_at(id);
 	pthread_mutex_unlock(philosophers[id].p_mutex);
-	while (!is_finished)
+	while (!safe_is_finished())
 	{
 		if (philosophers[id].state == THINKING)
 		{
 			print_log_if_alive(id, "is thinking");
+			// if (!print_log_if_alive(id, "is thinking"))
+			// 	break ;
 			sleep_until_next_mealtime(philosophers[id].next_meal_time);
 			while (try_to_eat(id) == false)
 			{
-				if (is_finished)
+				if (safe_is_finished())
 					break ;
 				usleep(RETRAY_TIME_US);
 			}
@@ -165,7 +173,8 @@ void	*philosopher_routine(void *arg)
 			sleep_from_now(EATING_TIME_MS);
 			finish_eating(id);
 			philosophers[id].state = SLEEPING;
-			if (philosophers[id].meals_eaten >= REQUIRED_MEALS)
+			if (REQUIRED_MEALS > 0
+				&& philosophers[id].meals_eaten >= REQUIRED_MEALS)
 			{
 				philosophers[id].wait_start_us = 0;
 				// printf("Philosopher %d has finished all %d meals\n", id,
@@ -176,13 +185,13 @@ void	*philosopher_routine(void *arg)
 		else if (philosophers[id].state == SLEEPING)
 		{
 			print_log_if_alive(id, "is sleeping");
+			// if (!print_log_if_alive(id, "is sleeping"))
+			// 	break ;
 			sleep_from_now(SLEEPING_TIME_MS);
 			philosophers[id].state = THINKING;
 		}
-		if (is_finished)
-		{
+		if (safe_is_finished())
 			break ;
-		}
 	}
 	return (NULL);
 }

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/27 18:14:10 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 00:32:11 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	main(void)
 	bool	all_finished;
 
 	pthread_mutex_init(&barrier.b_mutex, NULL);
-	barrier.thread_count = NUM_PHILOSOPHERS;
+	barrier.thread_count = NUM_PHILOSOPHERS + 1;
 	barrier.arrived_count = 0;
 	pthread_mutex_init(&m_mutex, NULL);
 	meal_interval_time = calc_optimal_interval_ms();
@@ -55,6 +55,7 @@ int	main(void)
 		philosophers[i].right_fork = &forks[(i + 1) % NUM_PHILOSOPHERS];
 		philosophers[i].p_mutex = &p_mutex[i];
 	}
+	pthread_create(&monitor_thread, NULL, monitor_routine, NULL);
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
 		pthread_create(&philosophers[i].thread, NULL, philosopher_routine,
@@ -64,22 +65,26 @@ int	main(void)
 	{
 		pthread_join(philosophers[i].thread, NULL);
 	}
+	pthread_join(monitor_thread, NULL);
 	all_finished = true;
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	if (REQUIRED_MEALS > 0)
 	{
-		if (philosophers[i].meals_eaten < REQUIRED_MEALS)
+		for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 		{
-			all_finished = false;
-			break ;
+			if (philosophers[i].meals_eaten < REQUIRED_MEALS)
+			{
+				all_finished = false;
+				break ;
+			}
 		}
-	}
-	if (all_finished)
-	{
-		printf("All philosophers have finished their meals successfully!\n");
-	}
-	else
-	{
-		printf("Some philosophers couldn't finish their meals.\n");
+		if (all_finished)
+		{
+			printf("All philosophers have finished their meals successfully!\n");
+		}
+		else
+		{
+			printf("Some philosophers couldn't finish their meals.\n");
+		}
 	}
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
