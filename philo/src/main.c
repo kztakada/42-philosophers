@@ -5,93 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/20 20:34:29 by katakada         ###   ########.fr       */
+/*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
+/*   Updated: 2025/03/27 18:14:10 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/philo.h"
+#include "philo.h"
+#include <time.h>
 
-// static int	sum(int a, int b)
-// {
-// 	return (a + b);
-// }
+// global variables
+pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
+bool			fork_in_use[NUM_PHILOSOPHERS] = {false};
+bool			is_finished = false;
+t_lltime		start_time = 0;
+////////////////////////
 
-typedef struct
+t_lltime	calc_optimal_interval_ms(void)
 {
-	pthread_mutex_t	mutex;
-	int				thread_count;
-	int				arrived_count;
-}					barrier_t;
+	const int	n = NUM_PHILOSOPHERS;
+	const int	k = NUM_PHILOSOPHERS / 2;
+	int			interval;
 
-void	barrier_init(barrier_t *barrier, int thread_count)
-{
-	pthread_mutex_init(&barrier->mutex, NULL);
-	barrier->thread_count = thread_count;
-	barrier->arrived_count = 0;
+	if (k == 0)
+		return ((EATING_TIME_MS + SLEEPING_TIME_MS));
+	interval = (EATING_TIME_MS)*n / k;
+	if (interval < (EATING_TIME_MS + SLEEPING_TIME_MS))
+		interval = (EATING_TIME_MS + SLEEPING_TIME_MS);
+	return (interval);
 }
 
-void	barrier_destroy(barrier_t *barrier)
+int	main(void)
 {
-	pthread_mutex_destroy(&barrier->mutex);
-}
+	bool	all_finished;
 
-void	barrier_wait(barrier_t *barrier)
-{
-	pthread_mutex_lock(&barrier->mutex);
-	barrier->arrived_count++;
-	pthread_mutex_unlock(&barrier->mutex);
-	while (1)
+	pthread_mutex_init(&barrier.b_mutex, NULL);
+	barrier.thread_count = NUM_PHILOSOPHERS;
+	barrier.arrived_count = 0;
+	pthread_mutex_init(&m_mutex, NULL);
+	meal_interval_time = calc_optimal_interval_ms();
+	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		pthread_mutex_lock(&barrier->mutex);
-		if (barrier->arrived_count == barrier->thread_count)
+		pthread_mutex_init(&forks[i], NULL);
+		pthread_mutex_init(&p_mutex[i], NULL);
+		philosophers[i].id = i;
+		philosophers[i].state = THINKING;
+		philosophers[i].meals_eaten = 0;
+		philosophers[i].wait_start_us = 0;
+		philosophers[i].left_fork = &forks[i];
+		philosophers[i].right_fork = &forks[(i + 1) % NUM_PHILOSOPHERS];
+		philosophers[i].p_mutex = &p_mutex[i];
+	}
+	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	{
+		pthread_create(&philosophers[i].thread, NULL, philosopher_routine,
+			&philosophers[i]);
+	}
+	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	{
+		pthread_join(philosophers[i].thread, NULL);
+	}
+	all_finished = true;
+	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	{
+		if (philosophers[i].meals_eaten < REQUIRED_MEALS)
 		{
-			pthread_mutex_unlock(&barrier->mutex);
+			all_finished = false;
 			break ;
 		}
-		pthread_mutex_unlock(&barrier->mutex);
 	}
-}
-
-void	*thread_function(void *arg)
-{
-	barrier_t	*barrier;
-
-	barrier = (barrier_t *)arg;
-	printf("Time%lu Thread %lu arrived at the barrier.\n", (long)clock(),
-		pthread_self());
-	barrier_wait(barrier);
-	printf("Time%lu Thread %lu passed the barrier.\n", (long)clock(),
-		pthread_self());
-	return (NULL);
-}
-
-int	app_main(int argc, char **argv)
-{
-	int			thread_count;
-	pthread_t	threads[thread_count];
-	barrier_t	barrier;
-
-	thread_count = 3;
-	(void)argc;
-	(void)argv;
-	barrier_init(&barrier, thread_count);
-	for (int i = 0; i < thread_count; i++)
+	if (all_finished)
 	{
-		pthread_create(&threads[i], NULL, thread_function, &barrier);
+		printf("All philosophers have finished their meals successfully!\n");
 	}
-	for (int i = 0; i < thread_count; i++)
+	else
 	{
-		pthread_join(threads[i], NULL);
+		printf("Some philosophers couldn't finish their meals.\n");
 	}
-	barrier_destroy(&barrier);
+	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	{
+		pthread_mutex_destroy(&p_mutex[i]);
+		pthread_mutex_destroy(&forks[i]);
+	}
+	pthread_mutex_destroy(&m_mutex);
+	pthread_mutex_destroy(&barrier.b_mutex);
+	pthread_mutex_destroy(&g_mutex);
 	return (0);
 }
-
-#ifndef TEST
-
-int	main(int argc, char *argv[])
-{
-	return (app_main(argc, argv));
-}
-#endif // TEST
