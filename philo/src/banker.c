@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:47:03 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/27 17:47:16 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:20:21 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 bool	reserve_forks(int philo_id)
 {
-	if (fork_in_use[left_fork(philo_id)] || fork_in_use[right_fork(philo_id)])
-		return (false);
 	pthread_mutex_lock(&g_mutex);
 	if (!fork_in_use[left_fork(philo_id)] && !fork_in_use[right_fork(philo_id)])
 	{
@@ -25,7 +23,6 @@ bool	reserve_forks(int philo_id)
 		return (true);
 	}
 	pthread_mutex_unlock(&g_mutex);
-	printf("Philosopher %d couldn't take forks////////////////\n", philo_id);
 	return (false);
 }
 
