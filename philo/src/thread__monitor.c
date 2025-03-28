@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 22:22:52 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:18:48 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,17 +30,16 @@ void	*monitor_routine(void *arg)
 		usleep(MONITOR_INTERVAL_US);
 		while (i < NUM_PHILOSOPHERS)
 		{
-			pthread_mutex_lock(philosophers[i].p_mutex);
+			pthread_mutex_lock(&s->philos[i].p_mutex);
 			// 食事回数が設定されているか or 指定回数以内かを確認
-			if (REQUIRED_MEALS < 0
-				|| philosophers[i].meals_eaten < REQUIRED_MEALS)
+			if (REQUIRED_MEALS < 0 || s->philos[i].meals_eaten < REQUIRED_MEALS)
 			{
 				can_still_eat = true;
 				// 死亡確認
-				if (get_last_alive_time_us(i) == -1)
+				if (get_last_alive_time_us(&s->philos[i]) == -1)
 					is_anyone_dead = true;
 			}
-			pthread_mutex_unlock(philosophers[i].p_mutex);
+			pthread_mutex_unlock(&s->philos[i].p_mutex);
 			i++;
 		}
 		i = 0;

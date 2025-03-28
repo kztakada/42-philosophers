@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 22:10:02 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/29 01:01:41 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-typedef long long		t_lltime;
 // for test only ////////////////////////////////
 
 // # define NUM_PHILOSOPHERS 199                    // 人数
@@ -36,20 +35,21 @@ typedef long long		t_lltime;
 // # define SLEEPING_TIME_MS 200 // 寝る時間 ms * 1000
 // # define REQUIRED_MEALS 0 // 食事回数 ms
 
-# define NUM_PHILOSOPHERS 4 // 人数
+# define NUM_PHILOSOPHERS 4                   // 人数
 # define SURVIVAL_TIME_PER_MEAL (t_lltime)300 // 生存時間 ms
-# define EATING_TIME_MS 200 // 食事時間 ms * 1000
-# define SLEEPING_TIME_MS 101 // 寝る時間 ms * 1000
-# define REQUIRED_MEALS 10 // 食事回数 ms
+# define EATING_TIME_MS 200                   // 食事時間 ms * 1000
+# define SLEEPING_TIME_MS 101                 // 寝る時間 ms * 1000
+# define REQUIRED_MEALS 10                    // 食事回数 ms
 
 # define RETRAY_TIME_US 50
-# define PRIORITY_WAIT_TIME_MS (EATING_TIME_MS / 4)
-# define WAIT_THRESHOLD_MS (SURVIVAL_TIME_PER_MEAL / 3)
 
 ///////////////////////////////////////////////
 
 # define NUM_MONITOR_THREAD 1
 # define MONITOR_INTERVAL_US 1000
+
+typedef long long		t_lltime;
+typedef struct s_phiro	t_philo;
 
 enum					e_philo_state
 {
@@ -88,7 +88,7 @@ typedef struct s_g_shared
 	t_barrier			barrier;
 }						t_g_shared;
 
-typedef struct s_phiro
+struct					s_phiro
 {
 	int					id;
 	enum e_philo_state	state;
@@ -98,43 +98,20 @@ typedef struct s_phiro
 	t_lltime			next_meal_time;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
-	pthread_mutex_t		*p_mutex;
+	pthread_mutex_t		p_mutex;
 	t_g_shared			*g_s;
-}						t_philo;
+	t_philo				*other_philos;
+};
 
 typedef struct s_shared
 {
 	t_g_shared			g_s;
-	t_philo				*philo;
+	t_philo				*philos;
 }						t_shared;
 
-// global variables
-// fix
-t_lltime meal_interval_time; ///////
-
-// for fork
-pthread_mutex_t forks[NUM_PHILOSOPHERS]; // init only
-
-// banker
-extern pthread_mutex_t g_mutex;            ///////
-extern bool fork_in_use[NUM_PHILOSOPHERS]; ///////
-extern t_lltime start_time;                ///////
-
-// for philo
-pthread_mutex_t p_mutex[NUM_PHILOSOPHERS]; // init only
-t_philo philosophers[NUM_PHILOSOPHERS];    ///////
-
-// barrier
-// t_barrier barrier; ///////
-
-// for monitor
-extern bool is_finished; ///////
-pthread_mutex_t m_mutex; ///////
-////////////////////////
-
 // banker.c
-bool					reserve_forks(int philo_id);
-void					unreseve_forks(int philo_id);
+bool					reserve_forks(t_philo *philo);
+void					unreseve_forks(t_philo *philo);
 
 // thread__monitor.c
 void					*monitor_routine(void *arg);
@@ -142,22 +119,20 @@ void					*monitor_routine(void *arg);
 // thread__philo_util.c
 void					sleep_until_next_mealtime(t_lltime next_time);
 void					sleep_from_now(t_lltime sleep_time_ms);
-void					barrier_wait_for_philo(t_barrier *barrier,
-							int philo_id);
+void					barrier_wait_for_philo(t_philo *philo);
 int						right_philo_id(int philo_id);
 int						left_philo_id(int philo_id);
-void					print_log_if_alive(int philo_id, char *msg);
+void					print_log_if_alive(t_philo *philo, char *msg);
 
 // thread__philo.c
 void					*philosopher_routine(void *arg);
 
 // thread__util.c
 void					barrier_wait(t_barrier *barrier);
-void					print_dead_log_only_once(t_lltime death_time_ms,
-							int philo_id);
-bool					safe_is_finished(void);
+
+bool					safe_is_finished(t_g_shared *g_s);
 int						philo_name(int philo_id);
-t_lltime				get_last_alive_time_us(int philo_id);
+t_lltime				get_last_alive_time_us(t_philo *philo);
 
 // time__util.c
 t_lltime				get_time_in_ms(void);

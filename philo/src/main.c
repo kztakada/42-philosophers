@@ -6,19 +6,12 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 22:17:46 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/29 00:58:33 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <time.h>
-
-// global variables
-pthread_mutex_t	g_mutex = PTHREAD_MUTEX_INITIALIZER;
-bool			fork_in_use[NUM_PHILOSOPHERS] = {false};
-bool			is_finished = false;
-t_lltime		start_time = 0;
-////////////////////////
 
 t_lltime	calc_optimal_interval_ms(void)
 {
@@ -42,37 +35,47 @@ int	main(void)
 	pthread_t		monitor_thread;
 	pthread_t		philo_thread[NUM_PHILOSOPHERS];
 	pthread_mutex_t	forks[NUM_PHILOSOPHERS];
-	pthread_mutex_t	p_mutex[NUM_PHILOSOPHERS];
+	bool			fork_in_use[NUM_PHILOSOPHERS];
 	t_shared		s;
 	t_philo			philos[NUM_PHILOSOPHERS];
 	bool			all_finished;
 
+	pthread_mutex_init(&s.g_s.g_mutex, NULL);
 	pthread_mutex_init(&s.g_s.barrier.b_mutex, NULL);
 	s.g_s.barrier.thread_count = NUM_PHILOSOPHERS + NUM_MONITOR_THREAD;
 	s.g_s.barrier.arrived_count = 0;
-	pthread_mutex_init(&m_mutex, NULL);
-	meal_interval_time = calc_optimal_interval_ms();
-	s.philo = philos;
+	pthread_mutex_init(&s.g_s.monitor.m_mutex, NULL);
+	s.g_s.meal_interval_time = calc_optimal_interval_ms();
+	s.philos = philos;
+	s.g_s.fork_in_use = fork_in_use;
+	s.g_s.monitor.is_finished = false;
+	s.g_s.num_of_philos = NUM_PHILOSOPHERS;
+	s.g_s.survival_time_per_meal = SURVIVAL_TIME_PER_MEAL;
+	s.g_s.eating_time = EATING_TIME_MS;
+	s.g_s.sleeping_time = SLEEPING_TIME_MS;
+	s.g_s.required_meals = REQUIRED_MEALS;
+	s.g_s.prioryty_wait_time = s.g_s.eating_time / 4;
+	s.g_s.wait_threshold_time = s.g_s.survival_time_per_meal / 3;
+	s.g_s.start_time = 0;
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
 		pthread_mutex_init(&forks[i], NULL);
-		pthread_mutex_init(&p_mutex[i], NULL);
-		philosophers[i].id = i;
-		philosophers[i].state = THINKING;
-		philosophers[i].meals_eaten = 0;
-		philosophers[i].wait_start_us = 0;
-		philosophers[i].left_fork = &forks[left_fork(i)];
-		philosophers[i].right_fork = &forks[right_fork(i)];
-		philosophers[i].p_mutex = &p_mutex[i];
-		s.philo[i].g_s = &s.g_s;
-		s.philo[i].id = i;
+		pthread_mutex_init(&s.philos[i].p_mutex, NULL);
+		s.philos[i].id = i;
+		s.philos[i].state = THINKING;
+		s.philos[i].meals_eaten = 0;
+		s.philos[i].wait_start_us = 0;
+		s.philos[i].left_fork = &forks[left_fork(i)];
+		s.philos[i].right_fork = &forks[right_fork(i)];
+		s.philos[i].g_s = &s.g_s;
+		s.philos[i].other_philos = s.philos;
 	}
 	pthread_create(&monitor_thread, NULL, monitor_routine, &s);
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		s.philo[i].id = i;
+		s.philos[i].id = i;
 		pthread_create(&philo_thread[i], NULL, philosopher_routine,
-			&s.philo[i]);
+			&s.philos[i]);
 	}
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
@@ -84,7 +87,7 @@ int	main(void)
 	{
 		for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 		{
-			if (philosophers[i].meals_eaten < REQUIRED_MEALS)
+			if (s.philos[i].meals_eaten < REQUIRED_MEALS)
 			{
 				all_finished = false;
 				break ;
@@ -101,11 +104,11 @@ int	main(void)
 	}
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		pthread_mutex_destroy(&p_mutex[i]);
+		pthread_mutex_destroy(&s.philos[i].p_mutex);
 		pthread_mutex_destroy(&forks[i]);
 	}
-	pthread_mutex_destroy(&m_mutex);
+	pthread_mutex_destroy(&s.g_s.monitor.m_mutex);
 	pthread_mutex_destroy(&s.g_s.barrier.b_mutex);
-	pthread_mutex_destroy(&g_mutex);
+	pthread_mutex_destroy(&s.g_s.g_mutex);
 	return (0);
 }
