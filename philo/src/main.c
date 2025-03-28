@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 00:32:11 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 14:18:16 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,18 @@ t_lltime		start_time = 0;
 t_lltime	calc_optimal_interval_ms(void)
 {
 	const int	n = NUM_PHILOSOPHERS;
-	const int	k = NUM_PHILOSOPHERS / 2;
-	int			interval;
+	const int	same_time_max_eat = NUM_PHILOSOPHERS / 2;
+	const int	offset_unit_time = EATING_TIME_MS / same_time_max_eat;
+	const int	required_offset_time = offset_unit_time * n;
 
-	if (k == 0)
+	// 人数が0か1の場合＝待機時間0
+	if (same_time_max_eat == 0)
 		return ((EATING_TIME_MS + SLEEPING_TIME_MS));
-	interval = (EATING_TIME_MS)*n / k;
-	if (interval < (EATING_TIME_MS + SLEEPING_TIME_MS))
-		interval = (EATING_TIME_MS + SLEEPING_TIME_MS);
-	return (interval);
+	// 人数が2以上の場合＝待機時間必要
+	if (required_offset_time < (EATING_TIME_MS + SLEEPING_TIME_MS))
+		return (EATING_TIME_MS + SLEEPING_TIME_MS);
+	else
+		return (required_offset_time);
 }
 
 int	main(void)
@@ -39,7 +42,7 @@ int	main(void)
 	bool	all_finished;
 
 	pthread_mutex_init(&barrier.b_mutex, NULL);
-	barrier.thread_count = NUM_PHILOSOPHERS + 1;
+	barrier.thread_count = NUM_PHILOSOPHERS + NUM_MONITOR_THREAD;
 	barrier.arrived_count = 0;
 	pthread_mutex_init(&m_mutex, NULL);
 	meal_interval_time = calc_optimal_interval_ms();
@@ -51,8 +54,8 @@ int	main(void)
 		philosophers[i].state = THINKING;
 		philosophers[i].meals_eaten = 0;
 		philosophers[i].wait_start_us = 0;
-		philosophers[i].left_fork = &forks[i];
-		philosophers[i].right_fork = &forks[(i + 1) % NUM_PHILOSOPHERS];
+		philosophers[i].left_fork = &forks[left_fork(i)];
+		philosophers[i].right_fork = &forks[right_fork(i)];
 		philosophers[i].p_mutex = &p_mutex[i];
 	}
 	pthread_create(&monitor_thread, NULL, monitor_routine, NULL);

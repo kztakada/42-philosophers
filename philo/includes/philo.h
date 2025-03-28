@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 00:37:35 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 14:20:54 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef long long		t_lltime;
 
 ///////////////////////////////////////////////
 
+# define NUM_MONITOR_THREAD 1
 # define MONITOR_INTERVAL_US 1000
 
 enum					e_philo_state
@@ -112,9 +113,10 @@ void					*monitor_routine(void *arg);
 // thread__philo_util.c
 void					sleep_until_next_mealtime(t_lltime next_time);
 void					sleep_from_now(t_lltime sleep_time_ms);
-void					barrier_wait_for_philo(t_barrier *barrier, int id);
-int						get_right_philosopher_id(int philo_id);
-int						get_left_philosopher_id(int philo_id);
+void					barrier_wait_for_philo(t_barrier *barrier,
+							int philo_id);
+int						right_philo_id(int philo_id);
+int						left_philo_id(int philo_id);
 void					print_log_if_alive(int philo_id, char *msg);
 
 // thread__philo.c
@@ -125,6 +127,7 @@ void					barrier_wait(t_barrier *barrier);
 void					print_dead_log_once(t_lltime death_time_ms,
 							int philo_id);
 bool					safe_is_finished(void);
+int						philo_name(int philo_id);
 
 // time__util.c
 t_lltime				get_time_in_ms(void);

@@ -6,11 +6,17 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/27 23:33:44 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 12:44:19 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+// philosopherの名前を取得する
+int	philo_name(int philo_id)
+{
+	return (philo_id + 1);
+}
 
 // バリア待機させる関数
 void	barrier_wait(t_barrier *barrier)
@@ -34,13 +40,13 @@ void	barrier_wait(t_barrier *barrier)
 void	print_dead_log_once(t_lltime death_time_ms, int philo_id)
 {
 	static bool	is_printed = false;
-	t_lltime	print_time;
+	t_lltime	time_stamp;
 
 	is_finished = true;
-	print_time = death_time_ms - start_time;
+	time_stamp = death_time_ms - start_time;
 	if (!is_printed)
 	{
-		printf("%lld %d %s\n", print_time, (philo_id + 1), "died");
+		printf("%lld %d %s\n", time_stamp, philo_name(philo_id), "died");
 		is_printed = true;
 	}
 }
