@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 14:25:36 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:33:22 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@ static bool	try_to_eat(int philo_id)
 {
 	bool		result;
 	t_lltime	current_time_us;
-	t_lltime	current_time_ms;
-	t_lltime	survival_time;
 	t_lltime	max_wait;
 	int			priority_phil;
 	t_lltime	wait_time;
@@ -28,20 +26,9 @@ static bool	try_to_eat(int philo_id)
 	{
 		philosophers[philo_id].wait_start_us = get_time_in_us();
 	}
-	current_time_us = get_time_in_us();
-	current_time_ms = current_time_us / 1000;
-	survival_time = current_time_ms
-		- philosophers[philo_id].last_meal_satart_time;
-	// 死亡確認ブロック
-	if (survival_time > SURVIVAL_TIME_PER_MEAL)
-	{
-		// 死亡ログを出力していない場合、死亡ログを出力する
-		pthread_mutex_lock(&m_mutex);
-		print_dead_log_once(current_time_ms, philo_id);
-		pthread_mutex_unlock(&m_mutex);
-		pthread_mutex_unlock(philosophers[philo_id].p_mutex);
+	current_time_us = get_last_alive_time_us(philo_id);
+	if (current_time_us == -1)
 		return (false);
-	}
 	pthread_mutex_unlock(philosophers[philo_id].p_mutex);
 	// 優先度確認ブロック
 	max_wait = 0;
@@ -77,26 +64,17 @@ static bool	try_to_eat(int philo_id)
 		// 1本目を取得する
 		pthread_mutex_lock(philosophers[philo_id].left_fork);
 		print_log_if_alive(philo_id, "has taken a fork");
-		// if (!print_log_if_alive(id, "has taken a fork"))
-		// 	return (false);
-		if (true) // TODO：この間に死亡確認して、死んでいるか？
+		if (get_last_alive_time_us(philo_id) != -1)
 		{
 			// 両方のフォークを取得できた場合
 			pthread_mutex_lock(philosophers[philo_id].right_fork);
 			print_log_if_alive(philo_id, "has taken a fork");
-			// if (!print_log_if_alive(id, "has taken a fork"))
-			// 	return (false);
 			pthread_mutex_lock(philosophers[philo_id].p_mutex);
 			philosophers[philo_id].state = EATING;
 			philosophers[philo_id].wait_start_us = 0;
-			philosophers[philo_id].last_meal_satart_time = get_time_in_us()
-				/ 1000;
+			philosophers[philo_id].last_meal_satart_time = get_time_in_ms();
 			pthread_mutex_unlock(philosophers[philo_id].p_mutex);
 			print_log_if_alive(philo_id, "is eating");
-			// if (!print_log_if_alive(id, "is eating"))
-			// 	return (false);
-			// printf("Philosopher %d is eating meal %d\n", id,
-			// 	philosophers[id].meals_eaten + 1);
 			result = true;
 		}
 		else
@@ -121,11 +99,6 @@ static void	finish_eating(int philo_id)
 	unreseve_forks(philo_id);
 	pthread_mutex_unlock(philosophers[philo_id].left_fork);
 	pthread_mutex_unlock(philosophers[philo_id].right_fork);
-	// if (!is_finished)
-	// {
-	// 	printf("Philosopher %d finished eating (total: %d meals)\n", id,
-	// 		philosophers[id].meals_eaten);
-	// }
 }
 
 static t_lltime	calc_initial_eat_at(int philo_id)
@@ -160,8 +133,6 @@ void	*philosopher_routine(void *arg)
 		if (philosophers[philo_id].state == THINKING)
 		{
 			print_log_if_alive(philo_id, "is thinking");
-			// if (!print_log_if_alive(id, "is thinking"))
-			// 	break ;
 			sleep_until_next_mealtime(philosophers[philo_id].next_meal_time);
 			while (try_to_eat(philo_id) == false)
 			{
@@ -188,8 +159,6 @@ void	*philosopher_routine(void *arg)
 		else if (philosophers[philo_id].state == SLEEPING)
 		{
 			print_log_if_alive(philo_id, "is sleeping");
-			// if (!print_log_if_alive(id, "is sleeping"))
-			// 	break ;
 			sleep_from_now(SLEEPING_TIME_MS);
 			philosophers[philo_id].state = THINKING;
 		}

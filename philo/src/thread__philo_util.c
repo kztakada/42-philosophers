@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 14:22:02 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:23:00 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,15 @@ void	sleep_from_now(t_lltime sleep_time_ms)
 
 void	print_log_if_alive(int philo_id, char *msg)
 {
-	t_lltime	now;
-	t_lltime	survival_time;
+	t_lltime	now_us;
+	t_lltime	now_ms;
 	t_lltime	time_stamp;
 
-	now = get_time_in_ms();
-	survival_time = now - philosophers[philo_id].last_meal_satart_time;
-	if (survival_time > SURVIVAL_TIME_PER_MEAL)
-	{
-		// 死亡ログを出力していない場合、死亡ログを出力する
-		pthread_mutex_lock(&m_mutex);
-		print_dead_log_once(now, philo_id);
-		pthread_mutex_unlock(&m_mutex);
+	now_us = get_last_alive_time_us(philo_id);
+	if (now_us == -1)
 		return ;
-	}
-	time_stamp = now - start_time;
+	now_ms = now_us / 1000;
+	time_stamp = now_ms - start_time;
 	if (!safe_is_finished())
 		printf("%lld %d %s\n", time_stamp, philo_name(philo_id), msg);
 }
