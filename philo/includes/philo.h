@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 16:20:03 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:10:02 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ typedef long long		t_lltime;
 # define SLEEPING_TIME_MS 101 // 寝る時間 ms * 1000
 # define REQUIRED_MEALS 10 // 食事回数 ms
 
-# define RETRAY_TIME_US (50)
+# define RETRAY_TIME_US 50
 # define PRIORITY_WAIT_TIME_MS (EATING_TIME_MS / 4)
 # define WAIT_THRESHOLD_MS (SURVIVAL_TIME_PER_MEAL / 3)
 
@@ -58,6 +58,36 @@ enum					e_philo_state
 	SLEEPING,
 };
 
+typedef struct s_barrier
+{
+	pthread_mutex_t		b_mutex;
+	int					thread_count;
+	int					arrived_count;
+}						t_barrier;
+
+typedef struct s_monitor
+{
+	pthread_mutex_t		m_mutex;
+	bool				is_finished;
+}						t_monitor;
+
+typedef struct s_g_shared
+{
+	int					num_of_philos;
+	t_lltime			survival_time_per_meal;
+	t_lltime			eating_time;
+	t_lltime			sleeping_time;
+	int					required_meals;
+	t_lltime			prioryty_wait_time;
+	t_lltime			wait_threshold_time;
+	pthread_mutex_t		g_mutex;
+	bool				*fork_in_use;
+	t_lltime			meal_interval_time;
+	t_lltime			start_time;
+	t_monitor			monitor;
+	t_barrier			barrier;
+}						t_g_shared;
+
 typedef struct s_phiro
 {
 	int					id;
@@ -69,38 +99,37 @@ typedef struct s_phiro
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
 	pthread_mutex_t		*p_mutex;
-	pthread_t			thread;
+	t_g_shared			*g_s;
 }						t_philo;
 
-typedef struct barrier_s
+typedef struct s_shared
 {
-	pthread_mutex_t		b_mutex;
-	int					thread_count;
-	int					arrived_count;
-}						t_barrier;
+	t_g_shared			g_s;
+	t_philo				*philo;
+}						t_shared;
 
 // global variables
+// fix
+t_lltime meal_interval_time; ///////
+
 // for fork
-pthread_mutex_t			forks[NUM_PHILOSOPHERS];
+pthread_mutex_t forks[NUM_PHILOSOPHERS]; // init only
 
 // banker
-extern pthread_mutex_t	g_mutex;
-extern bool				fork_in_use[NUM_PHILOSOPHERS];
-extern t_lltime			start_time;
-t_lltime				meal_interval_time;
+extern pthread_mutex_t g_mutex;            ///////
+extern bool fork_in_use[NUM_PHILOSOPHERS]; ///////
+extern t_lltime start_time;                ///////
 
 // for philo
-pthread_mutex_t			p_mutex[NUM_PHILOSOPHERS];
-t_philo					philosophers[NUM_PHILOSOPHERS];
+pthread_mutex_t p_mutex[NUM_PHILOSOPHERS]; // init only
+t_philo philosophers[NUM_PHILOSOPHERS];    ///////
 
 // barrier
-t_barrier				barrier;
+// t_barrier barrier; ///////
 
 // for monitor
-pthread_t				monitor_thread;
-
-extern bool				is_finished;
-pthread_mutex_t			m_mutex;
+extern bool is_finished; ///////
+pthread_mutex_t m_mutex; ///////
 ////////////////////////
 
 // banker.c

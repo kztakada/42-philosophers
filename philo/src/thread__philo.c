@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 16:33:22 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:22:04 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,13 +117,13 @@ static t_lltime	calc_initial_eat_at(int philo_id)
 
 void	*philosopher_routine(void *arg)
 {
-	t_philo	*self;
+	t_philo	*philo;
 	int		philo_id;
 
-	self = (t_philo *)arg;
-	philo_id = self->id;
+	philo = (t_philo *)arg;
+	philo_id = philo->id;
 	// バリア待機
-	barrier_wait_for_philo(&barrier, philo_id);
+	barrier_wait_for_philo(&philo->g_s->barrier, philo_id);
 	// 次回の食事時間を初期化
 	pthread_mutex_lock(philosophers[philo_id].p_mutex);
 	philosophers[philo_id].next_meal_time = calc_initial_eat_at(philo_id);

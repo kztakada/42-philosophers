@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 16:20:12 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:22:52 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,13 @@
 
 void	*monitor_routine(void *arg)
 {
-	bool	is_anyone_dead;
-	bool	can_still_eat;
-	int		i;
+	bool		is_anyone_dead;
+	bool		can_still_eat;
+	int			i;
+	t_shared	*s;
 
-	(void)arg;
-	barrier_wait(&barrier);
+	s = (t_shared *)arg;
+	barrier_wait(&s->g_s.barrier);
 	i = 0;
 	is_anyone_dead = false;
 	can_still_eat = true;

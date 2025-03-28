@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/28 14:18:16 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/28 22:17:46 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,20 @@ t_lltime	calc_optimal_interval_ms(void)
 
 int	main(void)
 {
-	bool	all_finished;
+	pthread_t		monitor_thread;
+	pthread_t		philo_thread[NUM_PHILOSOPHERS];
+	pthread_mutex_t	forks[NUM_PHILOSOPHERS];
+	pthread_mutex_t	p_mutex[NUM_PHILOSOPHERS];
+	t_shared		s;
+	t_philo			philos[NUM_PHILOSOPHERS];
+	bool			all_finished;
 
-	pthread_mutex_init(&barrier.b_mutex, NULL);
-	barrier.thread_count = NUM_PHILOSOPHERS + NUM_MONITOR_THREAD;
-	barrier.arrived_count = 0;
+	pthread_mutex_init(&s.g_s.barrier.b_mutex, NULL);
+	s.g_s.barrier.thread_count = NUM_PHILOSOPHERS + NUM_MONITOR_THREAD;
+	s.g_s.barrier.arrived_count = 0;
 	pthread_mutex_init(&m_mutex, NULL);
 	meal_interval_time = calc_optimal_interval_ms();
+	s.philo = philos;
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
 		pthread_mutex_init(&forks[i], NULL);
@@ -57,16 +64,19 @@ int	main(void)
 		philosophers[i].left_fork = &forks[left_fork(i)];
 		philosophers[i].right_fork = &forks[right_fork(i)];
 		philosophers[i].p_mutex = &p_mutex[i];
+		s.philo[i].g_s = &s.g_s;
+		s.philo[i].id = i;
 	}
-	pthread_create(&monitor_thread, NULL, monitor_routine, NULL);
+	pthread_create(&monitor_thread, NULL, monitor_routine, &s);
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		pthread_create(&philosophers[i].thread, NULL, philosopher_routine,
-			&philosophers[i]);
+		s.philo[i].id = i;
+		pthread_create(&philo_thread[i], NULL, philosopher_routine,
+			&s.philo[i]);
 	}
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		pthread_join(philosophers[i].thread, NULL);
+		pthread_join(philo_thread[i], NULL);
 	}
 	pthread_join(monitor_thread, NULL);
 	all_finished = true;
@@ -95,7 +105,7 @@ int	main(void)
 		pthread_mutex_destroy(&forks[i]);
 	}
 	pthread_mutex_destroy(&m_mutex);
-	pthread_mutex_destroy(&barrier.b_mutex);
+	pthread_mutex_destroy(&s.g_s.barrier.b_mutex);
 	pthread_mutex_destroy(&g_mutex);
 	return (0);
 }
