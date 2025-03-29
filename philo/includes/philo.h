@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 01:01:41 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 00:20:02 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,6 +113,12 @@ typedef struct s_shared
 bool					reserve_forks(t_philo *philo);
 void					unreseve_forks(t_philo *philo);
 
+// init.c
+bool					init_memory_space(t_shared *s, pthread_t **philo_thread,
+							pthread_mutex_t **forks);
+void					init_philos(t_shared *s, pthread_mutex_t *forks);
+void					setup_global_params(t_shared *s);
+
 // thread__monitor.c
 void					*monitor_routine(void *arg);
 
@@ -133,6 +139,11 @@ void					barrier_wait(t_barrier *barrier);
 bool					safe_is_finished(t_g_shared *g_s);
 int						philo_name(int philo_id);
 t_lltime				get_last_alive_time_us(t_philo *philo);
+
+// tidy_up.c
+void					all_mutex_destroy(t_shared *s, pthread_mutex_t *forks);
+void					all_free(t_shared *s, pthread_mutex_t *forks,
+							pthread_t *philo_thread);
 
 // time__util.c
 t_lltime				get_time_in_ms(void);
