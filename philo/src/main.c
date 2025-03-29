@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 00:58:33 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/29 20:24:59 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,43 @@ t_lltime	calc_optimal_interval_ms(void)
 		return (required_offset_time);
 }
 
+void	set_global_parameters(t_shared *s)
+{
+	s->g_s.num_of_philos = NUM_PHILOSOPHERS;
+	s->g_s.survival_time_per_meal = SURVIVAL_TIME_PER_MEAL;
+	s->g_s.eating_time = EATING_TIME_MS;
+	s->g_s.sleeping_time = SLEEPING_TIME_MS;
+	s->g_s.required_meals = REQUIRED_MEALS;
+}
+
 int	main(void)
 {
 	pthread_t		monitor_thread;
+	t_shared		s;
 	pthread_t		philo_thread[NUM_PHILOSOPHERS];
 	pthread_mutex_t	forks[NUM_PHILOSOPHERS];
 	bool			fork_in_use[NUM_PHILOSOPHERS];
-	t_shared		s;
 	t_philo			philos[NUM_PHILOSOPHERS];
 	bool			all_finished;
 
+	// まずは人数を確定させる
+	set_global_parameters(&s);
+	// mallocでメモリ確保する
+	s.philos = philos;
+	s.g_s.fork_in_use = fork_in_use;
 	pthread_mutex_init(&s.g_s.g_mutex, NULL);
+	// barrierの初期化
 	pthread_mutex_init(&s.g_s.barrier.b_mutex, NULL);
 	s.g_s.barrier.thread_count = NUM_PHILOSOPHERS + NUM_MONITOR_THREAD;
 	s.g_s.barrier.arrived_count = 0;
+	// monitorの初期化
 	pthread_mutex_init(&s.g_s.monitor.m_mutex, NULL);
-	s.g_s.meal_interval_time = calc_optimal_interval_ms();
-	s.philos = philos;
-	s.g_s.fork_in_use = fork_in_use;
 	s.g_s.monitor.is_finished = false;
-	s.g_s.num_of_philos = NUM_PHILOSOPHERS;
-	s.g_s.survival_time_per_meal = SURVIVAL_TIME_PER_MEAL;
-	s.g_s.eating_time = EATING_TIME_MS;
-	s.g_s.sleeping_time = SLEEPING_TIME_MS;
-	s.g_s.required_meals = REQUIRED_MEALS;
+	// blobalパラメータの初期化
+	s.g_s.meal_interval_time = calc_optimal_interval_ms();
+	s.g_s.start_time = 0;
 	s.g_s.prioryty_wait_time = s.g_s.eating_time / 4;
 	s.g_s.wait_threshold_time = s.g_s.survival_time_per_meal / 3;
-	s.g_s.start_time = 0;
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
 		pthread_mutex_init(&forks[i], NULL);
@@ -73,7 +83,6 @@ int	main(void)
 	pthread_create(&monitor_thread, NULL, monitor_routine, &s);
 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
 	{
-		s.philos[i].id = i;
 		pthread_create(&philo_thread[i], NULL, philosopher_routine,
 			&s.philos[i]);
 	}
@@ -82,6 +91,7 @@ int	main(void)
 		pthread_join(philo_thread[i], NULL);
 	}
 	pthread_join(monitor_thread, NULL);
+	// 独自のテストブロック
 	all_finished = true;
 	if (REQUIRED_MEALS > 0)
 	{
