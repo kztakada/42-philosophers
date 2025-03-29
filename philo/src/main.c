@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 20:24:59 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/29 21:21:34 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,65 @@ t_lltime	calc_optimal_interval_ms(void)
 		return (required_offset_time);
 }
 
-void	set_global_parameters(t_shared *s)
+bool	set_argv(t_shared *s, char *argv[])
 {
+	(void)argv;
 	s->g_s.num_of_philos = NUM_PHILOSOPHERS;
 	s->g_s.survival_time_per_meal = SURVIVAL_TIME_PER_MEAL;
 	s->g_s.eating_time = EATING_TIME_MS;
 	s->g_s.sleeping_time = SLEEPING_TIME_MS;
 	s->g_s.required_meals = REQUIRED_MEALS;
+	return (true);
 }
 
-int	main(void)
+bool	init_memory_space(t_shared *s, pthread_t **philo_thread,
+		pthread_mutex_t **forks)
 {
-	pthread_t		monitor_thread;
+	s->philos = malloc(sizeof(t_philo) * s->g_s.num_of_philos);
+	if (s->philos == NULL)
+		return (false);
+	s->g_s.fork_in_use = malloc(sizeof(bool) * s->g_s.num_of_philos);
+	if (s->g_s.fork_in_use == NULL)
+	{
+		free(s->philos);
+		return (false);
+	}
+	*philo_thread = malloc(sizeof(pthread_t) * s->g_s.num_of_philos);
+	if (philo_thread == NULL)
+	{
+		free(s->philos);
+		free(s->g_s.fork_in_use);
+		return (false);
+	}
+	*forks = malloc(sizeof(pthread_mutex_t) * s->g_s.num_of_philos);
+	if (forks == NULL)
+	{
+		free(s->philos);
+		free(s->g_s.fork_in_use);
+		free(philo_thread);
+		return (false);
+	}
+	return (true);
+}
+
+int	app_main(int argc, char *argv[])
+{
 	t_shared		s;
-	pthread_t		philo_thread[NUM_PHILOSOPHERS];
-	pthread_mutex_t	forks[NUM_PHILOSOPHERS];
-	bool			fork_in_use[NUM_PHILOSOPHERS];
-	t_philo			philos[NUM_PHILOSOPHERS];
+	pthread_mutex_t	*forks;
+	pthread_t		monitor_thread;
+	pthread_t		*philo_thread;
 	bool			all_finished;
 
+	(void)argc;
 	// まずは人数を確定させる
-	set_global_parameters(&s);
+	if (set_argv(&s, argv) == false)
+		return (1);
 	// mallocでメモリ確保する
-	s.philos = philos;
-	s.g_s.fork_in_use = fork_in_use;
+	if (init_memory_space(&s, &philo_thread, &forks) == false)
+	{
+		printf("malloc error\n");
+		return (1);
+	}
 	pthread_mutex_init(&s.g_s.g_mutex, NULL);
 	// barrierの初期化
 	pthread_mutex_init(&s.g_s.barrier.b_mutex, NULL);
@@ -120,5 +155,15 @@ int	main(void)
 	pthread_mutex_destroy(&s.g_s.monitor.m_mutex);
 	pthread_mutex_destroy(&s.g_s.barrier.b_mutex);
 	pthread_mutex_destroy(&s.g_s.g_mutex);
+	free(s.philos);
+	free(s.g_s.fork_in_use);
 	return (0);
 }
+
+#ifndef TEST
+
+int	main(int argc, char *argv[])
+{
+	return (app_main(argc, argv));
+}
+#endif // TEST
