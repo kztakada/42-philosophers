@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 00:29:45 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 00:38:14 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ bool	init_memory_space(t_shared *s, pthread_t **philo_thread,
 
 void	init_philos(t_shared *s, pthread_mutex_t *forks)
 {
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	int	i;
+
+	i = 0;
+	while (i < s->g_s.num_of_philos)
 	{
 		pthread_mutex_init(&forks[i], NULL);
 		pthread_mutex_init(&s->philos[i].p_mutex, NULL);
@@ -56,6 +59,7 @@ void	init_philos(t_shared *s, pthread_mutex_t *forks)
 		s->philos[i].right_fork = &forks[right_fork(i)];
 		s->philos[i].g_s = &s->g_s;
 		s->philos[i].other_philos = s->philos;
+		i++;
 	}
 }
 
