@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 19:22:08 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 23:35:12 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,29 +23,8 @@
 # include <sys/time.h>
 # include <unistd.h>
 
-// for test only ////////////////////////////////
-
-// # define NUM_PHILOSOPHERS 199                    // 人数
-// # define SURVIVAL_TIME_PER_MEAL (t_lltime)(200) // 生存時間 ms
-// # define EATING_TIME (90 * 1000)                 // 食事時間 ms * 1000
-// # define THINKING_TIME (90 * 1000)               // 寝る時間 ms * 1000
-// # define REQUIRED_MEALS 10                       // 食事回数 ms
-// # define NUM_PHILOSOPHERS 5                   // 人数
-// # define SURVIVAL_TIME_PER_MEAL (t_lltime)510 // 生存時間 ms
-// # define EATING_TIME_MS 200                   // 食事時間 ms * 1000
-// # define SLEEPING_TIME_MS 200                 // 寝る時間 ms * 1000
-// # define REQUIRED_MEALS -1                    // 食事回数 ms
-
-// # define NUM_PHILOSOPHERS 4                   // 人数
-// # define SURVIVAL_TIME_PER_MEAL (t_lltime)300 // 生存時間 ms
-// # define EATING_TIME_MS 200                   // 食事時間 ms * 1000
-// # define SLEEPING_TIME_MS 101                 // 寝る時間 ms * 1000
-// # define REQUIRED_MEALS 10                    // 食事回数 ms
-
 # define RETRAY_TIME_US 50
 # define PRIORITY_WAIT_TIME_US 100
-
-///////////////////////////////////////////////
 
 # define NUM_MONITOR_THREAD 1
 # define MONITOR_INTERVAL_US 1000
@@ -83,10 +62,10 @@ typedef struct s_g_shared
 	t_lltime			eating_time;
 	t_lltime			sleeping_time;
 	int					required_meals;
-	t_lltime			wait_threshold_time;
 	pthread_mutex_t		g_mutex;
 	bool				*fork_in_use;
 	t_lltime			meal_interval_time;
+	t_lltime			wait_threshold_us;
 	t_lltime			start_time;
 	t_monitor			monitor;
 	t_barrier			barrier;
@@ -140,8 +119,17 @@ void					put_error(char *err_str);
 // thread__monitor.c
 void					*monitor_routine(void *arg);
 
+// thread__philo__try_to_eat__has_first_priority.c
+bool					has_first_priority(t_philo *philo);
+
 // thread__philo__try_to_eat.c
 bool					try_to_eat(t_philo *philo);
+
+// thread__philo_loop_actions.c
+bool					done_thinking(t_philo *philo);
+void					done_eating(t_philo *philo);
+bool					is_still_hungry(t_philo *philo);
+bool					done_sleeping(t_philo *philo);
 
 // thread__philo_util.c
 void					sleep_until_next_mealtime(t_lltime next_time);

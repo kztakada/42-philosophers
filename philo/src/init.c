@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 19:22:14 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 23:33:20 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,19 @@ void	init_philos(t_shared *s, pthread_mutex_t *forks)
 	}
 }
 
+static t_lltime	calc_wait_threshold_time_us(t_shared *s)
+{
+	const int	n = s->g_s.num_of_philos;
+	const int	same_time_max_eat = n / 2;
+	const int	offset_unit_time = s->g_s.eating_time / same_time_max_eat;
+	const int	required_offset_time = offset_unit_time * n;
+
+	if (required_offset_time < (s->g_s.eating_time + s->g_s.sleeping_time))
+		return (0);
+	else
+		return (offset_unit_time * 1000);
+}
+
 static t_lltime	calc_optimal_interval_ms(t_shared *s)
 {
 	const int	n = s->g_s.num_of_philos;
@@ -92,6 +105,6 @@ void	setup_global_params(t_shared *s)
 	s->g_s.monitor.is_finished = false;
 	// blobalパラメータの初期化
 	s->g_s.meal_interval_time = calc_optimal_interval_ms(s);
+	s->g_s.wait_threshold_us = calc_wait_threshold_time_us(s);
 	s->g_s.start_time = 0;
-	s->g_s.wait_threshold_time = s->g_s.survival_time_per_meal / 3;
 }

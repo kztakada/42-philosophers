@@ -6,27 +6,11 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 17:17:47 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 20:28:52 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-// バリア待機させる関数 for Pilo
-void	barrier_wait_for_philo(t_philo *philo)
-{
-	t_barrier		*barrier;
-	pthread_mutex_t	*g_mutex;
-
-	barrier = &philo->g_s->barrier;
-	g_mutex = &philo->g_s->g_mutex;
-	barrier_wait(barrier);
-	philo->last_meal_satart_time = get_time_in_ms();
-	pthread_mutex_lock(g_mutex);
-	if (philo->g_s->start_time == 0)
-		philo->g_s->start_time = philo->last_meal_satart_time;
-	pthread_mutex_unlock(g_mutex);
-}
 
 // 右隣の哲学者のidを取得する関数
 int	right_philo_id(t_philo *philo)

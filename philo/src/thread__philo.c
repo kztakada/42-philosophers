@@ -6,21 +6,26 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 16:57:00 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 20:28:50 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static void	finish_eating(t_philo *philo)
+// バリア待機させる関数 for Pilo
+void	barrier_wait_for_philo(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->p_mutex);
-	philo->meals_eaten++;
-	philo->next_meal_time += philo->g_s->meal_interval_time;
-	pthread_mutex_unlock(&philo->p_mutex);
-	unreseve_forks(philo);
-	pthread_mutex_unlock(philo->left_fork);
-	pthread_mutex_unlock(philo->right_fork);
+	t_barrier		*barrier;
+	pthread_mutex_t	*g_mutex;
+
+	barrier = &philo->g_s->barrier;
+	g_mutex = &philo->g_s->g_mutex;
+	barrier_wait(barrier);
+	philo->last_meal_satart_time = get_time_in_ms();
+	pthread_mutex_lock(g_mutex);
+	if (philo->g_s->start_time == 0)
+		philo->g_s->start_time = philo->last_meal_satart_time;
+	pthread_mutex_unlock(g_mutex);
 }
 
 static t_lltime	calc_initial_eat_at(t_philo *philo)
@@ -37,6 +42,31 @@ static t_lltime	calc_initial_eat_at(t_philo *philo)
 	return (philo->g_s->start_time + (offset_unit_time * offset_unit_count));
 }
 
+static void	philo_loop(t_philo *philo)
+{
+	while (!safe_is_finished(philo->g_s))
+	{
+		if (philo->state == THINKING)
+		{
+			if (done_thinking(philo) == false)
+				break ;
+		}
+		else if (philo->state == EATING)
+		{
+			done_eating(philo);
+			if (is_still_hungry(philo) == false)
+				break ;
+		}
+		else if (philo->state == SLEEPING)
+		{
+			if (done_sleeping(philo) == false)
+				break ;
+		}
+		if (safe_is_finished(philo->g_s))
+			break ;
+	}
+}
+
 void	*philosopher_routine(void *arg)
 {
 	t_philo	*philo;
@@ -48,42 +78,6 @@ void	*philosopher_routine(void *arg)
 	pthread_mutex_lock(&philo->p_mutex);
 	philo->next_meal_time = calc_initial_eat_at(philo);
 	pthread_mutex_unlock(&philo->p_mutex);
-	while (!safe_is_finished(philo->g_s))
-	{
-		if (philo->state == THINKING)
-		{
-			print_log_if_alive(philo, "is thinking");
-			sleep_until_next_mealtime(philo->next_meal_time);
-			while (try_to_eat(philo) == false)
-			{
-				if (safe_is_finished(philo->g_s))
-					break ;
-				usleep(RETRAY_TIME_US);
-			}
-			philo->state = EATING;
-		}
-		else if (philo->state == EATING)
-		{
-			sleep_from_now(philo->g_s->eating_time);
-			finish_eating(philo);
-			philo->state = SLEEPING;
-			if (philo->g_s->required_meals > 0
-				&& philo->meals_eaten >= philo->g_s->required_meals)
-			{
-				philo->wait_start_us = 0;
-				// printf("Philosopher %d has finished all %d meals\n", id,
-				// 	REQUIRED_MEALS);
-				break ;
-			}
-		}
-		else if (philo->state == SLEEPING)
-		{
-			print_log_if_alive(philo, "is sleeping");
-			sleep_from_now(philo->g_s->sleeping_time);
-			philo->state = THINKING;
-		}
-		if (safe_is_finished(philo->g_s))
-			break ;
-	}
+	philo_loop(philo);
 	return (NULL);
 }
