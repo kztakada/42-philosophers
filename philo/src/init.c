@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 02:05:03 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 19:22:14 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,5 @@ void	setup_global_params(t_shared *s)
 	// blobalパラメータの初期化
 	s->g_s.meal_interval_time = calc_optimal_interval_ms(s);
 	s->g_s.start_time = 0;
-	s->g_s.prioryty_wait_time = s->g_s.eating_time / 4;
 	s->g_s.wait_threshold_time = s->g_s.survival_time_per_meal / 3;
 }

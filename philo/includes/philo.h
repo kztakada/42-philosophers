@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 17:16:45 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 19:22:08 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@
 // # define REQUIRED_MEALS 10                    // 食事回数 ms
 
 # define RETRAY_TIME_US 50
+# define PRIORITY_WAIT_TIME_US 100
 
 ///////////////////////////////////////////////
 
@@ -82,7 +83,6 @@ typedef struct s_g_shared
 	t_lltime			eating_time;
 	t_lltime			sleeping_time;
 	int					required_meals;
-	t_lltime			prioryty_wait_time;
 	t_lltime			wait_threshold_time;
 	pthread_mutex_t		g_mutex;
 	bool				*fork_in_use;
