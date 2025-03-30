@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 17:42:55 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:06:50 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,21 @@ void	barrier_wait(t_barrier *barrier)
 static void	m_unsafe_print_dead_log_only_once(t_lltime death_time_ms,
 		t_philo *philo)
 {
-	static bool	has_printed = false;
-	t_lltime	time_stamp;
+	static t_bool	has_printed = FALSE;
+	t_lltime		time_stamp;
 
-	philo->g_s->monitor.is_finished = true;
+	philo->g_s->monitor.is_finished = TRUE;
 	time_stamp = death_time_ms - philo->g_s->start_time;
 	if (!has_printed)
 	{
 		printf("%lld %d %s\n", time_stamp, philo_name(philo->id), "died");
-		has_printed = true;
+		has_printed = TRUE;
 	}
 }
 
-bool	safe_is_finished(t_g_shared *g_s)
+t_bool	safe_is_finished(t_g_shared *g_s)
 {
-	bool	ret;
+	t_bool	ret;
 
 	pthread_mutex_lock(&g_s->monitor.m_mutex);
 	ret = g_s->monitor.is_finished;

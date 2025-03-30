@@ -6,13 +6,13 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:31:46 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 00:10:16 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:06:24 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	setup_clocks_for_priorty_calc(t_philo *philo,
+static t_bool	setup_clocks_for_priorty_calc(t_philo *philo,
 		t_lltime *current_time_us)
 {
 	// 現在時刻取得ブロック
@@ -26,8 +26,8 @@ static bool	setup_clocks_for_priorty_calc(t_philo *philo,
 	pthread_mutex_unlock(&philo->g_s->monitor.m_mutex);
 	pthread_mutex_unlock(&philo->p_mutex);
 	if (*current_time_us == -1)
-		return (false);
-	return (true);
+		return (FALSE);
+	return (TRUE);
 }
 
 static void	setup_max_waiter(int *priority_philo, t_lltime *max_wait_us,
@@ -57,7 +57,7 @@ static void	setup_max_waiter(int *priority_philo, t_lltime *max_wait_us,
 }
 
 // 自分の両隣でかつ、自分よりも長く待っている哲学者を優先する
-bool	has_first_priority(t_philo *philo)
+t_bool	has_first_priority(t_philo *philo)
 {
 	t_lltime	current_time_us;
 	t_lltime	max_wait_us;
@@ -65,8 +65,8 @@ bool	has_first_priority(t_philo *philo)
 	t_philo		*other_philos;
 
 	// 既に死んでたらここで離脱
-	if (setup_clocks_for_priorty_calc(philo, &current_time_us) == false)
-		return (false);
+	if (setup_clocks_for_priorty_calc(philo, &current_time_us) == FALSE)
+		return (FALSE);
 	max_wait_us = 0;
 	priority_philo = -1;
 	// max_wait計算ブロック
@@ -79,7 +79,7 @@ bool	has_first_priority(t_philo *philo)
 			|| right_philo_id(&other_philos[priority_philo]) == philo->id))
 	{
 		usleep(PRIORITY_WAIT_TIME_US);
-		return (false);
+		return (FALSE);
 	}
-	return (true);
+	return (TRUE);
 }

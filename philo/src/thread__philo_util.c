@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 20:28:52 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:06:41 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	sleep_from_now(t_lltime sleep_time_ms)
 	sleep_until_next_mealtime(next_time_us / 1000);
 }
 
-bool	print_log_if_alive(t_philo *philo, char *msg)
+t_bool	print_log_if_alive(t_philo *philo, char *msg)
 {
 	t_lltime	now_us;
 	t_lltime	now_ms;
@@ -63,7 +63,7 @@ bool	print_log_if_alive(t_philo *philo, char *msg)
 	if (now_us == -1)
 	{
 		pthread_mutex_unlock(&philo->g_s->monitor.m_mutex);
-		return (false);
+		return (FALSE);
 	}
 	now_ms = now_us / 1000;
 	time_stamp = now_ms - philo->g_s->start_time;
@@ -71,8 +71,8 @@ bool	print_log_if_alive(t_philo *philo, char *msg)
 	{
 		printf("%lld %d %s\n", time_stamp, philo_name(philo->id), msg);
 		pthread_mutex_unlock(&philo->g_s->monitor.m_mutex);
-		return (true);
+		return (TRUE);
 	}
 	pthread_mutex_unlock(&philo->g_s->monitor.m_mutex);
-	return (false);
+	return (FALSE);
 }

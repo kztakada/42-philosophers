@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 13:37:41 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:08:43 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ int	app_main(int argc, char *argv[])
 	pthread_t		monitor_thread;
 	pthread_t		*philo_thread;
 
-	if (parse_argv(&s, argc, argv) == false)
+	if (parse_argv(&s, argc, argv) == FALSE)
 		return (1);
-	if (init_memory_space(&s, &philo_thread, &forks) == false)
+	if (init_memory_space(&s, &philo_thread, &forks) == FALSE)
 		return (put_error(MALLOC_ERR_MSG), 1);
 	setup_global_params(&s);
 	init_philos(&s, forks);
@@ -70,7 +70,7 @@ int	main(int argc, char *argv[])
 // 	{
 // 		if (s.philos[i].meals_eaten < REQUIRED_MEALS)
 // 		{
-// 			all_finished = false;
+// 			all_finished = FALSE;
 // 			break ;
 // 		}
 // 	}

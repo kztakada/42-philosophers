@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 00:29:23 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:07:44 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,18 +50,18 @@ static void	philo_loop(t_philo *philo)
 	{
 		if (philo->state == THINKING)
 		{
-			if (done_thinking(philo) == false)
+			if (done_thinking(philo) == FALSE)
 				break ;
 		}
 		else if (philo->state == EATING)
 		{
 			done_eating(philo);
-			if (is_still_hungry(philo) == false)
+			if (is_still_hungry(philo) == FALSE)
 				break ;
 		}
 		else if (philo->state == SLEEPING)
 		{
-			if (done_sleeping(philo) == false)
+			if (done_sleeping(philo) == FALSE)
 				break ;
 		}
 		if (safe_is_finished(philo->g_s))

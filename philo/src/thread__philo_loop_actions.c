@@ -6,27 +6,27 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:26:42 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 00:14:57 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:06:35 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-bool	done_thinking(t_philo *philo)
+t_bool	done_thinking(t_philo *philo)
 {
-	if (print_log_if_alive(philo, "is thinking") == false)
-		return (false);
+	if (print_log_if_alive(philo, "is thinking") == FALSE)
+		return (FALSE);
 	sleep_until_next_mealtime(philo->next_meal_time);
-	while (try_to_eat(philo) == false)
+	while (try_to_eat(philo) == FALSE)
 	{
 		if (safe_is_finished(philo->g_s))
-			return (false);
+			return (FALSE);
 		usleep(RETRAY_TIME_US);
 	}
 	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = EATING;
 	pthread_mutex_unlock(&philo->p_mutex);
-	return (true);
+	return (TRUE);
 }
 
 static void	finish_eating(t_philo *philo)
@@ -49,7 +49,7 @@ void	done_eating(t_philo *philo)
 	pthread_mutex_unlock(&philo->p_mutex);
 }
 
-bool	is_still_hungry(t_philo *philo)
+t_bool	is_still_hungry(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->p_mutex);
 	if (philo->g_s->required_meals > 0
@@ -57,19 +57,19 @@ bool	is_still_hungry(t_philo *philo)
 	{
 		philo->wait_start_us = 0;
 		pthread_mutex_unlock(&philo->p_mutex);
-		return (false);
+		return (FALSE);
 	}
 	pthread_mutex_unlock(&philo->p_mutex);
-	return (true);
+	return (TRUE);
 }
 
-bool	done_sleeping(t_philo *philo)
+t_bool	done_sleeping(t_philo *philo)
 {
-	if (print_log_if_alive(philo, "is sleeping") == false)
-		return (false);
+	if (print_log_if_alive(philo, "is sleeping") == FALSE)
+		return (FALSE);
 	sleep_from_now(philo->g_s->sleeping_time);
 	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = THINKING;
 	pthread_mutex_unlock(&philo->p_mutex);
-	return (true);
+	return (TRUE);
 }

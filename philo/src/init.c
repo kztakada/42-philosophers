@@ -6,30 +6,30 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 23:33:20 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:04:18 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-bool	init_memory_space(t_shared *s, pthread_t **philo_thread,
+t_bool	init_memory_space(t_shared *s, pthread_t **philo_thread,
 		pthread_mutex_t **forks)
 {
 	s->philos = malloc(sizeof(t_philo) * s->g_s.num_of_philos);
 	if (s->philos == NULL)
-		return (false);
-	s->g_s.fork_in_use = malloc(sizeof(bool) * s->g_s.num_of_philos);
+		return (FALSE);
+	s->g_s.fork_in_use = malloc(sizeof(t_bool) * s->g_s.num_of_philos);
 	if (s->g_s.fork_in_use == NULL)
 	{
 		free(s->philos);
-		return (false);
+		return (FALSE);
 	}
 	*philo_thread = malloc(sizeof(pthread_t) * s->g_s.num_of_philos);
 	if (philo_thread == NULL)
 	{
 		free(s->philos);
 		free(s->g_s.fork_in_use);
-		return (false);
+		return (FALSE);
 	}
 	*forks = malloc(sizeof(pthread_mutex_t) * s->g_s.num_of_philos);
 	if (forks == NULL)
@@ -37,9 +37,9 @@ bool	init_memory_space(t_shared *s, pthread_t **philo_thread,
 		free(s->philos);
 		free(s->g_s.fork_in_use);
 		free(philo_thread);
-		return (false);
+		return (FALSE);
 	}
-	return (true);
+	return (TRUE);
 }
 
 void	init_philos(t_shared *s, pthread_mutex_t *forks)
@@ -102,7 +102,7 @@ void	setup_global_params(t_shared *s)
 	s->g_s.barrier.arrived_count = 0;
 	// monitorの初期化
 	pthread_mutex_init(&s->g_s.monitor.m_mutex, NULL);
-	s->g_s.monitor.is_finished = false;
+	s->g_s.monitor.is_finished = FALSE;
 	// blobalパラメータの初期化
 	s->g_s.meal_interval_time = calc_optimal_interval_ms(s);
 	s->g_s.wait_threshold_us = calc_wait_threshold_time_us(s);

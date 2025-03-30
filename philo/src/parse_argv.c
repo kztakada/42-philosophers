@@ -6,13 +6,13 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:49:52 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 15:00:15 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 01:06:05 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-static bool	is_under_int_digits(const char *str)
+static t_bool	is_under_int_digits(const char *str)
 {
 	int	i;
 	int	sign;
@@ -30,12 +30,12 @@ static bool	is_under_int_digits(const char *str)
 	while (str[i])
 	{
 		if (!ft_isdigit(str[i]))
-			return (false);
+			return (FALSE);
 		i++;
 	}
-	if (is_under_int_max_min(str, sign, i) == false)
-		return (false);
-	return (true);
+	if (is_under_int_max_min(str, sign, i) == FALSE)
+		return (FALSE);
+	return (TRUE);
 }
 
 static long	ascii_to_int(const char *str_pos, int sign)
@@ -80,41 +80,41 @@ static int	ft_atoi(const char *str_src)
 	return ((int)(abs_value * sign));
 }
 
-static bool	convert_str_to_num(const char *str, int *num)
+static t_bool	convert_str_to_num(const char *str, int *num)
 {
 	if (!is_under_int_digits(str))
-		return (false);
+		return (FALSE);
 	*num = ft_atoi(str);
 	if (*num < 0)
-		return (false);
-	return (true);
+		return (FALSE);
+	return (TRUE);
 }
 
-bool	parse_argv(t_shared *s, int argc, char *argv[])
+t_bool	parse_argv(t_shared *s, int argc, char *argv[])
 {
 	int	num;
 
 	if (argc < 5 || argc > 6)
-		return (put_error(ARGV_ERR_MSG), false);
-	if (convert_str_to_num(argv[1], &num) == false || num <= 0)
-		return (put_error(ARGV_ERR_MSG), false);
+		return (put_error(ARGV_ERR_MSG), FALSE);
+	if (convert_str_to_num(argv[1], &num) == FALSE || num <= 0)
+		return (put_error(ARGV_ERR_MSG), FALSE);
 	s->g_s.num_of_philos = num;
-	if (convert_str_to_num(argv[2], &num) == false || num <= 0)
-		return (put_error(ARGV_ERR_MSG), false);
+	if (convert_str_to_num(argv[2], &num) == FALSE || num <= 0)
+		return (put_error(ARGV_ERR_MSG), FALSE);
 	s->g_s.survival_time_per_meal = (t_lltime)num;
-	if (convert_str_to_num(argv[3], &num) == false || num <= 0)
-		return (put_error(ARGV_ERR_MSG), false);
+	if (convert_str_to_num(argv[3], &num) == FALSE || num <= 0)
+		return (put_error(ARGV_ERR_MSG), FALSE);
 	s->g_s.eating_time = (t_lltime)num;
-	if (convert_str_to_num(argv[4], &num) == false || num <= 0)
-		return (put_error(ARGV_ERR_MSG), false);
+	if (convert_str_to_num(argv[4], &num) == FALSE || num <= 0)
+		return (put_error(ARGV_ERR_MSG), FALSE);
 	s->g_s.sleeping_time = (t_lltime)num;
 	if (argc == 6)
 	{
-		if (convert_str_to_num(argv[5], &num) == false || num <= 0)
-			return (put_error(ARGV_ERR_MSG), false);
+		if (convert_str_to_num(argv[5], &num) == FALSE || num <= 0)
+			return (put_error(ARGV_ERR_MSG), FALSE);
 		s->g_s.required_meals = num;
 	}
 	else
 		s->g_s.required_meals = -1;
-	return (true);
+	return (TRUE);
 }
