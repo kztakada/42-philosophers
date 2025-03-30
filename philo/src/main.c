@@ -6,23 +6,12 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 00:36:38 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 13:37:41 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 #include <time.h>
-
-bool	parse_argv(t_shared *s, char *argv[])
-{
-	(void)argv;
-	s->g_s.num_of_philos = NUM_PHILOSOPHERS;
-	s->g_s.survival_time_per_meal = SURVIVAL_TIME_PER_MEAL;
-	s->g_s.eating_time = EATING_TIME_MS;
-	s->g_s.sleeping_time = SLEEPING_TIME_MS;
-	s->g_s.required_meals = REQUIRED_MEALS;
-	return (true);
-}
 
 void	create_threads(t_shared *s, pthread_t *monitor_thread,
 		pthread_t *philo_thread)
@@ -53,14 +42,10 @@ int	app_main(int argc, char *argv[])
 	pthread_t		monitor_thread;
 	pthread_t		*philo_thread;
 
-	(void)argc;
-	if (parse_argv(&s, argv) == false)
+	if (parse_argv(&s, argc, argv) == false)
 		return (1);
 	if (init_memory_space(&s, &philo_thread, &forks) == false)
-	{
-		printf("malloc error\n");
-		return (1);
-	}
+		return (put_error(MALLOC_ERR_MSG), 1);
 	setup_global_params(&s);
 	init_philos(&s, forks);
 	create_threads(&s, &monitor_thread, philo_thread);

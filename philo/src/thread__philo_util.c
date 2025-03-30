@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 00:55:51 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 01:48:26 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,15 +29,16 @@ void	barrier_wait_for_philo(t_philo *philo)
 }
 
 // 右隣の哲学者のidを取得する関数
-int	right_philo_id(int philo_id)
+int	right_philo_id(t_philo *philo)
 {
-	return ((philo_id + 1) % NUM_PHILOSOPHERS);
+	return ((philo->id + 1) % philo->g_s->num_of_philos);
 }
 
 // 左隣の哲学者のidを取得する関数
-int	left_philo_id(int philo_id)
+int	left_philo_id(t_philo *philo)
 {
-	return ((philo_id + NUM_PHILOSOPHERS - 1) % NUM_PHILOSOPHERS);
+	return ((philo->id + philo->g_s->num_of_philos - 1)
+		% philo->g_s->num_of_philos);
 }
 
 void	sleep_until_next_mealtime(t_lltime next_time_ms)

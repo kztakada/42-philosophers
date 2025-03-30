@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 00:35:34 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 01:49:32 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ t_lltime	get_last_alive_time_us(t_philo *philo)
 	now_us = get_time_in_us();
 	now_ms = now_us / 1000;
 	survival_time = now_ms - philo->last_meal_satart_time;
-	if (survival_time > SURVIVAL_TIME_PER_MEAL)
+	if (survival_time > philo->g_s->survival_time_per_meal)
 	{
 		// 死亡ログを出力していない場合、死亡ログを出力する
 		print_dead_log_only_once(now_ms, philo);

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 00:18:48 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 01:43:10 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,12 @@ void	*monitor_routine(void *arg)
 	{
 		can_still_eat = false;
 		usleep(MONITOR_INTERVAL_US);
-		while (i < NUM_PHILOSOPHERS)
+		while (i < s->g_s.num_of_philos)
 		{
 			pthread_mutex_lock(&s->philos[i].p_mutex);
 			// 食事回数が設定されているか or 指定回数以内かを確認
-			if (REQUIRED_MEALS < 0 || s->philos[i].meals_eaten < REQUIRED_MEALS)
+			if (s->g_s.required_meals < 0
+				|| s->philos[i].meals_eaten < s->g_s.required_meals)
 			{
 				can_still_eat = true;
 				// 死亡確認

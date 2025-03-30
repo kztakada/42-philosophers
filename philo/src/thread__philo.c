@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/29 00:59:40 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 02:00:17 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static bool	try_to_eat(t_philo *philo)
 	bool		result;
 	t_lltime	current_time_us;
 	t_lltime	max_wait;
-	int			priority_phil;
+	int			priority_philo;
 	t_lltime	wait_time;
 
 	result = false;
@@ -32,8 +32,8 @@ static bool	try_to_eat(t_philo *philo)
 	pthread_mutex_unlock(&philo->p_mutex);
 	// 優先度確認ブロック
 	max_wait = 0;
-	priority_phil = -1;
-	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
+	priority_philo = -1;
+	for (int i = 0; i < philo->g_s->num_of_philos; i++)
 	{
 		if (philo->other_philos[i].state == THINKING
 			&& philo->other_philos[i].wait_start_us != 0)
@@ -42,14 +42,14 @@ static bool	try_to_eat(t_philo *philo)
 			if (wait_time > max_wait)
 			{
 				max_wait = wait_time;
-				priority_phil = i;
+				priority_philo = i;
 			}
 		}
 	}
-	if (max_wait > philo->g_s->wait_threshold_time && priority_phil != -1
-		&& priority_phil != philo->id
-		&& (left_philo_id(priority_phil) == philo->id
-			|| right_philo_id(priority_phil) == philo->id))
+	if (max_wait > philo->g_s->wait_threshold_time && priority_philo != -1
+		&& priority_philo != philo->id
+		&& (left_philo_id(&philo->other_philos[priority_philo]) == philo->id
+			|| right_philo_id(&philo->other_philos[priority_philo]) == philo->id))
 	{
 		sleep_from_now(philo->g_s->prioryty_wait_time);
 		return (false);
@@ -99,9 +99,9 @@ static void	finish_eating(t_philo *philo)
 
 static t_lltime	calc_initial_eat_at(t_philo *philo)
 {
-	const int	time_to_eat_ms = EATING_TIME_MS;
-	const int	n = NUM_PHILOSOPHERS;
-	const int	same_time_max_eat = NUM_PHILOSOPHERS / 2;
+	const int	time_to_eat_ms = philo->g_s->eating_time;
+	const int	n = philo->g_s->num_of_philos;
+	const int	same_time_max_eat = n / 2;
 	const int	offset_unit_time = time_to_eat_ms / same_time_max_eat;
 	const int	offset_unit_count = (same_time_max_eat * philo->id) % n;
 
@@ -138,10 +138,11 @@ void	*philosopher_routine(void *arg)
 		}
 		else if (philo->state == EATING)
 		{
-			sleep_from_now(EATING_TIME_MS);
+			sleep_from_now(philo->g_s->eating_time);
 			finish_eating(philo);
 			philo->state = SLEEPING;
-			if (REQUIRED_MEALS > 0 && philo->meals_eaten >= REQUIRED_MEALS)
+			if (philo->g_s->required_meals > 0
+				&& philo->meals_eaten >= philo->g_s->required_meals)
 			{
 				philo->wait_start_us = 0;
 				// printf("Philosopher %d has finished all %d meals\n", id,
@@ -152,7 +153,7 @@ void	*philosopher_routine(void *arg)
 		else if (philo->state == SLEEPING)
 		{
 			print_log_if_alive(philo, "is sleeping");
-			sleep_from_now(SLEEPING_TIME_MS);
+			sleep_from_now(philo->g_s->sleeping_time);
 			philo->state = THINKING;
 		}
 		if (safe_is_finished(philo->g_s))

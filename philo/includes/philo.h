@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 00:20:02 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 15:02:11 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # include "./for_test.h" // for test
+# include <limits.h>
 # include <pthread.h>
 # include <stdbool.h>
 # include <stdio.h>
@@ -29,17 +30,17 @@
 // # define EATING_TIME (90 * 1000)                 // 食事時間 ms * 1000
 // # define THINKING_TIME (90 * 1000)               // 寝る時間 ms * 1000
 // # define REQUIRED_MEALS 10                       // 食事回数 ms
-// # define NUM_PHILOSOPHERS 5 // 人数
+// # define NUM_PHILOSOPHERS 5                   // 人数
 // # define SURVIVAL_TIME_PER_MEAL (t_lltime)510 // 生存時間 ms
-// # define EATING_TIME_MS 200 // 食事時間 ms * 1000
-// # define SLEEPING_TIME_MS 200 // 寝る時間 ms * 1000
-// # define REQUIRED_MEALS 0 // 食事回数 ms
+// # define EATING_TIME_MS 200                   // 食事時間 ms * 1000
+// # define SLEEPING_TIME_MS 200                 // 寝る時間 ms * 1000
+// # define REQUIRED_MEALS -1                    // 食事回数 ms
 
-# define NUM_PHILOSOPHERS 4                   // 人数
-# define SURVIVAL_TIME_PER_MEAL (t_lltime)300 // 生存時間 ms
-# define EATING_TIME_MS 200                   // 食事時間 ms * 1000
-# define SLEEPING_TIME_MS 101                 // 寝る時間 ms * 1000
-# define REQUIRED_MEALS 10                    // 食事回数 ms
+// # define NUM_PHILOSOPHERS 4                   // 人数
+// # define SURVIVAL_TIME_PER_MEAL (t_lltime)300 // 生存時間 ms
+// # define EATING_TIME_MS 200                   // 食事時間 ms * 1000
+// # define SLEEPING_TIME_MS 101                 // 寝る時間 ms * 1000
+// # define REQUIRED_MEALS 10                    // 食事回数 ms
 
 # define RETRAY_TIME_US 50
 
@@ -47,6 +48,9 @@
 
 # define NUM_MONITOR_THREAD 1
 # define MONITOR_INTERVAL_US 1000
+
+# define MALLOC_ERR_MSG "Error: malloc failed\n"
+# define ARGV_ERR_MSG "Error: Invalid arguments\n"
 
 typedef long long		t_lltime;
 typedef struct s_phiro	t_philo;
@@ -119,6 +123,20 @@ bool					init_memory_space(t_shared *s, pthread_t **philo_thread,
 void					init_philos(t_shared *s, pthread_mutex_t *forks);
 void					setup_global_params(t_shared *s);
 
+// parse_argv__util.c
+int						ft_strncmp(const char *str1_src, const char *str2_src,
+							size_t cmp_chars);
+
+bool					is_under_int_max_min(const char *str, int sign,
+							int digits);
+int						ft_isdigit(int c);
+
+// parse_argv.c
+bool					parse_argv(t_shared *s, int argc, char *argv[]);
+
+// put_error.c
+void					put_error(char *err_str);
+
 // thread__monitor.c
 void					*monitor_routine(void *arg);
 
@@ -126,8 +144,8 @@ void					*monitor_routine(void *arg);
 void					sleep_until_next_mealtime(t_lltime next_time);
 void					sleep_from_now(t_lltime sleep_time_ms);
 void					barrier_wait_for_philo(t_philo *philo);
-int						right_philo_id(int philo_id);
-int						left_philo_id(int philo_id);
+int						right_philo_id(t_philo *philo);
+int						left_philo_id(t_philo *philo);
 void					print_log_if_alive(t_philo *philo, char *msg);
 
 // thread__philo.c
@@ -150,7 +168,7 @@ t_lltime				get_time_in_ms(void);
 t_lltime				get_time_in_us(void);
 
 // util.c
-int						left_fork(int philo_id);
-int						right_fork(int philo_id);
+int						left_fork(t_philo *philo);
+int						right_fork(t_philo *philo);
 
 #endif
