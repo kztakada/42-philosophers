@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:31:46 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 23:34:45 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:10:16 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ static void	setup_max_waiter(int *priority_philo, t_lltime *max_wait_us,
 	i = 0;
 	while (i < philo->g_s->num_of_philos)
 	{
+		pthread_mutex_lock(&philo->other_philos[i].p_mutex);
 		if (philo->other_philos[i].state == THINKING
 			&& philo->other_philos[i].wait_start_us != 0)
 		{
@@ -50,6 +51,7 @@ static void	setup_max_waiter(int *priority_philo, t_lltime *max_wait_us,
 				*priority_philo = i;
 			}
 		}
+		pthread_mutex_unlock(&philo->other_philos[i].p_mutex);
 		i++;
 	}
 }

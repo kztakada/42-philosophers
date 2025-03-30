@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 20:26:42 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 23:39:34 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/31 00:14:57 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ bool	done_thinking(t_philo *philo)
 			return (false);
 		usleep(RETRAY_TIME_US);
 	}
+	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = EATING;
+	pthread_mutex_unlock(&philo->p_mutex);
 	return (true);
 }
 
@@ -42,7 +44,9 @@ void	done_eating(t_philo *philo)
 {
 	sleep_from_now(philo->g_s->eating_time);
 	finish_eating(philo);
+	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = SLEEPING;
+	pthread_mutex_unlock(&philo->p_mutex);
 }
 
 bool	is_still_hungry(t_philo *philo)
@@ -64,6 +68,8 @@ bool	done_sleeping(t_philo *philo)
 	if (print_log_if_alive(philo, "is sleeping") == false)
 		return (false);
 	sleep_from_now(philo->g_s->sleeping_time);
+	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = THINKING;
+	pthread_mutex_unlock(&philo->p_mutex);
 	return (true);
 }
