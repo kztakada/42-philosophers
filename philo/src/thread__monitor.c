@@ -6,24 +6,17 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 01:43:10 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:52:30 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	*monitor_routine(void *arg)
+static void	monitor_loop(t_shared *s, bool is_anyone_dead, bool can_still_eat)
 {
-	bool		is_anyone_dead;
-	bool		can_still_eat;
-	int			i;
-	t_shared	*s;
+	int	i;
 
-	s = (t_shared *)arg;
-	barrier_wait(&s->g_s.barrier);
 	i = 0;
-	is_anyone_dead = false;
-	can_still_eat = true;
 	while (!is_anyone_dead && can_still_eat)
 	{
 		can_still_eat = false;
@@ -45,5 +38,18 @@ void	*monitor_routine(void *arg)
 		}
 		i = 0;
 	}
+}
+
+void	*monitor_routine(void *arg)
+{
+	bool		is_anyone_dead;
+	bool		can_still_eat;
+	t_shared	*s;
+
+	s = (t_shared *)arg;
+	barrier_wait(&s->g_s.barrier);
+	is_anyone_dead = false;
+	can_still_eat = true;
+	monitor_loop(s, is_anyone_dead, can_still_eat);
 	return (NULL);
 }
