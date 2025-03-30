@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 16:52:30 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:22:53 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,10 @@ static void	monitor_loop(t_shared *s, bool is_anyone_dead, bool can_still_eat)
 			{
 				can_still_eat = true;
 				// 死亡確認
-				if (get_last_alive_time_us(&s->philos[i]) == -1)
+				pthread_mutex_lock(&s->g_s.monitor.m_mutex);
+				if (m_unsafe_get_last_alive_time_us(&s->philos[i]) == -1)
 					is_anyone_dead = true;
+				pthread_mutex_unlock(&s->g_s.monitor.m_mutex);
 			}
 			pthread_mutex_unlock(&s->philos[i].p_mutex);
 			i++;

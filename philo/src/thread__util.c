@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 16:31:29 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:42:55 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,8 @@ void	barrier_wait(t_barrier *barrier)
 }
 
 // 死亡したログを１度だけ表示させる
-static void	print_dead_log_only_once(t_lltime death_time_ms, t_philo *philo)
+static void	m_unsafe_print_dead_log_only_once(t_lltime death_time_ms,
+		t_philo *philo)
 {
 	static bool	has_printed = false;
 	t_lltime	time_stamp;
@@ -61,30 +62,22 @@ bool	safe_is_finished(t_g_shared *g_s)
 	return (ret);
 }
 
-t_lltime	get_last_alive_time_us(t_philo *philo)
+t_lltime	m_unsafe_get_last_alive_time_us(t_philo *philo)
 {
-	t_lltime		now_us;
-	t_lltime		now_ms;
-	t_lltime		survival_time;
-	pthread_mutex_t	*m_mutex;
+	t_lltime	now_us;
+	t_lltime	now_ms;
+	t_lltime	survival_time;
 
-	m_mutex = &philo->g_s->monitor.m_mutex;
-	pthread_mutex_lock(m_mutex);
 	if (philo->g_s->monitor.is_finished)
-	{
-		pthread_mutex_unlock(m_mutex);
 		return (-1);
-	}
 	now_us = get_time_in_us();
 	now_ms = now_us / 1000;
 	survival_time = now_ms - philo->last_meal_satart_time;
 	if (survival_time > philo->g_s->survival_time_per_meal)
 	{
 		// 死亡ログを出力していない場合、死亡ログを出力する
-		print_dead_log_only_once(now_ms, philo);
-		pthread_mutex_unlock(m_mutex);
+		m_unsafe_print_dead_log_only_once(now_ms, philo);
 		return (-1);
 	}
-	pthread_mutex_unlock(m_mutex);
 	return (now_us);
 }

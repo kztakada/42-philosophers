@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 15:02:11 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 17:16:45 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,13 +140,16 @@ void					put_error(char *err_str);
 // thread__monitor.c
 void					*monitor_routine(void *arg);
 
+// thread__philo__try_to_eat.c
+bool					try_to_eat(t_philo *philo);
+
 // thread__philo_util.c
 void					sleep_until_next_mealtime(t_lltime next_time);
 void					sleep_from_now(t_lltime sleep_time_ms);
 void					barrier_wait_for_philo(t_philo *philo);
 int						right_philo_id(t_philo *philo);
 int						left_philo_id(t_philo *philo);
-void					print_log_if_alive(t_philo *philo, char *msg);
+bool					print_log_if_alive(t_philo *philo, char *msg);
 
 // thread__philo.c
 void					*philosopher_routine(void *arg);
@@ -156,7 +159,7 @@ void					barrier_wait(t_barrier *barrier);
 
 bool					safe_is_finished(t_g_shared *g_s);
 int						philo_name(int philo_id);
-t_lltime				get_last_alive_time_us(t_philo *philo);
+t_lltime				m_unsafe_get_last_alive_time_us(t_philo *philo);
 
 // tidy_up.c
 void					all_mutex_destroy(t_shared *s, pthread_mutex_t *forks);
