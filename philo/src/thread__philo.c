@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 02:00:17 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:34:05 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,10 @@ static bool	try_to_eat(t_philo *philo)
 	}
 	current_time_us = get_last_alive_time_us(philo);
 	if (current_time_us == -1)
+	{
+		pthread_mutex_unlock(&philo->p_mutex);
 		return (false);
+	}
 	pthread_mutex_unlock(&philo->p_mutex);
 	// 優先度確認ブロック
 	max_wait = 0;
@@ -57,6 +60,15 @@ static bool	try_to_eat(t_philo *philo)
 	// フォーク取得ブロック
 	if (reserve_forks(philo))
 	{
+		if (philo->g_s->num_of_philos == 1)
+		{
+			pthread_mutex_lock(philo->left_fork);
+			print_log_if_alive(philo, "has taken a fork");
+			pthread_mutex_unlock(philo->left_fork);
+			while (!safe_is_finished(philo->g_s))
+				usleep(RETRAY_TIME_US);
+			return (false);
+		}
 		// 1本目を取得する
 		pthread_mutex_lock(philo->left_fork);
 		print_log_if_alive(philo, "has taken a fork");

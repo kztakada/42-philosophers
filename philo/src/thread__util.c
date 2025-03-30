@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 01:49:32 by katakada         ###   ########.fr       */
+/*   Updated: 2025/03/30 16:31:29 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,11 @@ t_lltime	get_last_alive_time_us(t_philo *philo)
 
 	m_mutex = &philo->g_s->monitor.m_mutex;
 	pthread_mutex_lock(m_mutex);
+	if (philo->g_s->monitor.is_finished)
+	{
+		pthread_mutex_unlock(m_mutex);
+		return (-1);
+	}
 	now_us = get_time_in_us();
 	now_ms = now_us / 1000;
 	survival_time = now_ms - philo->last_meal_satart_time;
