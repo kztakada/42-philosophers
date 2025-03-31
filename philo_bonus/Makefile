@@ -6,14 +6,14 @@
 #    By: katakada <katakada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/16 21:21:00 by katakada          #+#    #+#              #
-#    Updated: 2025/03/18 17:43:44 by katakada         ###   ########.fr        #
+#    Updated: 2025/03/31 19:36:34 by katakada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME			=	philo
+NAME			=	philo_bonus
 
 CC				=	cc
-DEBUG_CC		=	cc -D IS_DEBUG=1 -g -fsanitize=address
+DEBUG_CC		=	cc -D IS_DEBUG=1 -g -fsanitize=thread
 
 CFLAGS			=	-Wall -Wextra -Werror
 
