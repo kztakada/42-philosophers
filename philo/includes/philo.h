@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:11:52 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:54:42 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ struct					s_phiro
 	enum e_philo_state	state;
 	int					meals_eaten;
 	t_lltime			wait_start_us;
-	t_lltime			last_meal_satart_time;
+	t_lltime			last_meal_start_time;
 	t_lltime			next_meal_time;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;

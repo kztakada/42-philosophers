@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 16:57:52 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:06:30 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:54:42 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ t_bool	start_eating(t_philo *philo)
 	pthread_mutex_lock(&philo->p_mutex);
 	philo->state = EATING;
 	philo->wait_start_us = 0;
-	philo->last_meal_satart_time = get_time_in_ms();
+	philo->last_meal_start_time = get_time_in_ms();
 	pthread_mutex_unlock(&philo->p_mutex);
 	if (print_log_if_alive(philo, "is eating") == FALSE)
 	{

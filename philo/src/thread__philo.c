@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:07:44 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 15:54:42 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@ void	barrier_wait_for_philo(t_philo *philo)
 	g_mutex = &philo->g_s->g_mutex;
 	barrier_wait(barrier);
 	pthread_mutex_lock(&philo->p_mutex);
-	philo->last_meal_satart_time = get_time_in_ms();
+	philo->last_meal_start_time = get_time_in_ms();
 	pthread_mutex_unlock(&philo->p_mutex);
 	pthread_mutex_lock(g_mutex);
 	if (philo->g_s->start_time == 0)
-		philo->g_s->start_time = philo->last_meal_satart_time;
+		philo->g_s->start_time = philo->last_meal_start_time;
 	pthread_mutex_unlock(g_mutex);
 }
 
