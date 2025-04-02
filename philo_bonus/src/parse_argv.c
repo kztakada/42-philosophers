@@ -6,11 +6,11 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:49:52 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:06:05 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 16:26:36 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 static t_bool	is_under_int_digits(const char *str)
 {
@@ -90,31 +90,31 @@ static t_bool	convert_str_to_num(const char *str, int *num)
 	return (TRUE);
 }
 
-t_bool	parse_argv(t_shared *s, int argc, char *argv[])
+t_bool	parse_argv(t_shared_dup *s, int argc, char *argv[])
 {
 	int	num;
 
 	if (argc < 5 || argc > 6)
-		return (put_error(ARGV_ERR_MSG), FALSE);
+		return (put_error_exit(ARGV_ERR_MSG), FALSE);
 	if (convert_str_to_num(argv[1], &num) == FALSE || num <= 0)
-		return (put_error(ARGV_ERR_MSG), FALSE);
-	s->g_s.num_of_philos = num;
+		return (put_error_exit(ARGV_ERR_MSG), FALSE);
+	s->g_dup.num_of_philos = num;
 	if (convert_str_to_num(argv[2], &num) == FALSE || num <= 0)
-		return (put_error(ARGV_ERR_MSG), FALSE);
-	s->g_s.survival_time_per_meal = (t_lltime)num;
+		return (put_error_exit(ARGV_ERR_MSG), FALSE);
+	s->g_dup.survival_time_per_meal = (t_lltime)num;
 	if (convert_str_to_num(argv[3], &num) == FALSE || num <= 0)
-		return (put_error(ARGV_ERR_MSG), FALSE);
-	s->g_s.eating_time = (t_lltime)num;
+		return (put_error_exit(ARGV_ERR_MSG), FALSE);
+	s->g_dup.eating_time = (t_lltime)num;
 	if (convert_str_to_num(argv[4], &num) == FALSE || num <= 0)
-		return (put_error(ARGV_ERR_MSG), FALSE);
-	s->g_s.sleeping_time = (t_lltime)num;
+		return (put_error_exit(ARGV_ERR_MSG), FALSE);
+	s->g_dup.sleeping_time = (t_lltime)num;
 	if (argc == 6)
 	{
 		if (convert_str_to_num(argv[5], &num) == FALSE || num <= 0)
-			return (put_error(ARGV_ERR_MSG), FALSE);
-		s->g_s.required_meals = num;
+			return (put_error_exit(ARGV_ERR_MSG), FALSE);
+		s->g_dup.required_meals = num;
 	}
 	else
-		s->g_s.required_meals = -1;
+		s->g_dup.required_meals = -1;
 	return (TRUE);
 }

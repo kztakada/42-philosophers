@@ -6,11 +6,11 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 14:44:05 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:05:59 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/01 21:05:21 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int	ft_strncmp(const char *str1_src, const char *str2_src, size_t cmp_chars)
 {

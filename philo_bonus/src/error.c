@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   put_error.c                                        :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 13:24:05 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/30 13:33:29 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 19:34:57 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 static size_t	ft_strlen(const char *str_src)
 {
@@ -35,7 +35,14 @@ static int	ft_putstr_fd(char *str_src, int fd)
 	return (count);
 }
 
-void	put_error(char *err_str)
+void	put_error_exit(char *err_str)
 {
 	ft_putstr_fd(err_str, STDERR_FILENO);
+	exit(EXIT_FAILURE);
+}
+
+void	handle_e(int func_result, char *err_msg)
+{
+	if (func_result < 0)
+		put_error_exit(err_msg);
 }
