@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 19:35:04 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:30:09 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@
 # define E_SEM_C "Error: sem_close"
 # define E_SEM_O "Error: sem_open"
 # define E_SEM_U "Error: sem_unlink"
+
+// semaphore names
+# define B_SEM_READY "/ready_sem"
+# define B_SEM_START "/start_sem"
 
 typedef long long		t_lltime;
 typedef struct s_philo	t_philo;

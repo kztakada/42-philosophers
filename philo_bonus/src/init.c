@@ -6,11 +6,12 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 16:29:48 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:33:04 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+#define OWNER_ONLY_WRITE 0644
 
 t_bool	init_memory_space(t_shared_dup *s)
 {
@@ -20,14 +21,22 @@ t_bool	init_memory_space(t_shared_dup *s)
 	return (TRUE);
 }
 
+static sem_t	*get_sem(const char *sem_name, int sem_count)
+{
+	sem_t	*sem;
+
+	handle_e(sem_unlink(sem_name), E_SEM_U);
+	sem = sem_open(sem_name, O_CREAT | O_EXCL, OWNER_ONLY_WRITE, sem_count);
+	if (sem == SEM_FAILED)
+		put_error_exit("Error: sem_open\n");
+	handle_e(sem_unlink(sem_name), E_SEM_U);
+	return (sem);
+}
+
 static t_bool	init_barrier_sem(t_shared_dup *s)
 {
-	sem_unlink("/ready_sem");
-	sem_unlink("/start_sem");
-	s->g_dup.barrier.ready_sem = sem_open("/ready_sem", O_CREAT | O_EXCL, 0644,
-			0);
-	s->g_dup.barrier.start_sem = sem_open("/start_sem", O_CREAT | O_EXCL, 0644,
-			0);
+	s->g_dup.barrier.ready_sem = get_sem(B_SEM_READY, 0);
+	s->g_dup.barrier.start_sem = get_sem(B_SEM_START, 0);
 	if (s->g_dup.barrier.ready_sem == SEM_FAILED
 		|| s->g_dup.barrier.start_sem == SEM_FAILED)
 	{

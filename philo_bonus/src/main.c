@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 19:43:44 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/02 20:30:18 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,6 @@ int	app_main(int argc, char **argv)
 	// 全ての子プロセスが終了するのを待つ
 	barrier_wait_for_main(&s);
 	handle_terminate_all_philo_prosess(&s);
-	handle_e(sem_unlink("/ready_sem"), E_SEM_U);
-	handle_e(sem_unlink("/start_sem"), E_SEM_U);
 	return (0);
 }
 
