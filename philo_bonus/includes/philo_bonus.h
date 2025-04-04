@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 20:30:09 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:22:18 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,11 @@
 // semaphore names
 # define B_SEM_READY "/ready_sem"
 # define B_SEM_START "/start_sem"
+# define G_SEM_FORKS "/forks"
+# define G_SEM_WAITERS "/waiters"
+# define G_SEM_LOG "/can_log"
+# define G_SEM_LOG_DEAD "/can_log_dead"
+# define P_SEM_CAN_ACTION "/can_touch_me"
 
 typedef long long		t_lltime;
 typedef struct s_philo	t_philo;
@@ -76,16 +81,27 @@ typedef struct s_g_shared_duplication
 	t_lltime			start_time;
 	// t_monitor			monitor;
 	t_barrier			barrier;
+
+	sem_t				*forks;
+	sem_t				*waiters;
+	sem_t				*can_log;
+	sem_t				*can_log_dead;
 }						t_g_dup;
 
 struct					s_philo
 {
 	int					id;
-	pid_t				pid;
 	enum e_philo_state	state;
 	int					meals_eaten;
 	t_lltime			last_meal_start_time;
 	t_lltime			next_meal_time;
+
+	pthread_t			main;
+	pthread_t			monitor;
+
+	pid_t				pid;
+	sem_t				*can_touch_me;
+	pthread_mutex_t		m_mutex;
 	t_g_dup				*g_dup;
 };
 
@@ -105,7 +121,7 @@ void					handle_terminate_all_philo_prosess(t_shared_dup *s);
 
 // init.c
 t_bool					init_memory_space(t_shared_dup *s);
-t_bool					init_shared_dup(t_shared_dup *s);
+void					init_shared_dup(t_shared_dup *s);
 
 // parse_argv__util.c
 int						ft_strncmp(const char *str1_src, const char *str2_src,
@@ -120,6 +136,18 @@ t_bool					parse_argv(t_shared_dup *s, int argc, char *argv[]);
 
 // prosess_philo.c
 void					exec_philo_prosess(t_philo *philo);
+
+// thread__monitor.c
+void					*monitor_rutine(void *arg);
+
+// thread__philo.c
+void					*philo_rutine(void *arg);
+
+// thread__util.c
+int						philo_name(int philo_id);
+void					sleep_until_next_mealtime(t_lltime next_time_ms);
+void					sleep_from_now(t_lltime sleep_time_ms);
+t_lltime				unsafe_get_last_alive_time(t_philo *philo);
 
 // time__util.c
 t_lltime				get_time_in_ms(void);

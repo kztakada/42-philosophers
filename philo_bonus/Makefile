@@ -6,17 +6,17 @@
 #    By: katakada <katakada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/16 21:21:00 by katakada          #+#    #+#              #
-#    Updated: 2025/03/31 19:36:34 by katakada         ###   ########.fr        #
+#    Updated: 2025/04/04 15:34:02 by katakada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			=	philo_bonus
 
-CC				=	cc
-DEBUG_CC		=	cc -D IS_DEBUG=1 -g -fsanitize=thread
+CC				=	cc -fsanitize=thread 
+DEBUG_CC		=	cc -D I -fsanitize=thread 
 
 CFLAGS			=	-Wall -Wextra -Werror
-
+DEBUG_CFLAGS	=	-Wall -Wextra -Werror-Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed -Wno-cast-qual
 INCS			=	-I includes/
 
 SRC_PATH		=	src/
@@ -29,6 +29,7 @@ ISDEBUG = 0
 
 ifeq ($(ISDEBUG), 1)
 	CC = $(DEBUG_CC)
+	CFLAGS = $(DEBUG_CFLAGS)
 endif
 
 

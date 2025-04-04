@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 20:30:18 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/04 12:21:15 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,21 @@
 
 void	barrier_wait_for_main(t_shared_dup *s)
 {
-	int	i;
-
-	i = 0;
-	// 全ての子プロセスが準備完了になるのを待つ
-	while (i < s->g_dup.num_of_philos)
-	{
-		handle_e(sem_wait(s->g_dup.barrier.ready_sem), E_SEM_W);
-		i++;
-	}
-	// 全ての子プロセスに開始信号を送る
-	i = 0;
-	while (i < s->g_dup.num_of_philos)
-	{
-		handle_e(sem_post(s->g_dup.barrier.start_sem), E_SEM_P);
-		i++;
-	}
+	// int	i;
+	// i = 0;
+	// // 全ての子プロセスが準備完了になるのを待つ
+	// while (i < s->g_dup.num_of_philos)
+	// {
+	// 	handle_e(sem_wait(s->g_dup.barrier.ready_sem), E_SEM_W);
+	// 	i++;
+	// }
+	// // 全ての子プロセスに開始信号を送る
+	// i = 0;
+	// while (i < s->g_dup.num_of_philos)
+	// {
+	// 	handle_e(sem_post(s->g_dup.barrier.start_sem), E_SEM_P);
+	// 	i++;
+	// }
 	// セマフォをクローズ
 	handle_e(sem_close(s->g_dup.barrier.ready_sem), E_SEM_C);
 	handle_e(sem_close(s->g_dup.barrier.start_sem), E_SEM_C);
@@ -44,9 +43,9 @@ int	app_main(int argc, char **argv)
 		return (1);
 	if (init_memory_space(&s) == FALSE)
 		return (1);
-	if (init_shared_dup(&s) == FALSE)
-		return (1);
-	s.g_dup.start_time = get_time_in_us();
+	init_shared_dup(&s);
+	s.g_dup.start_time = get_time_in_ms() + 2000;
+	// printf("meal_interval_time: %lld\n", s.g_dup.meal_interval_time);
 	i = 0;
 	while (i < s.g_dup.num_of_philos)
 	{
