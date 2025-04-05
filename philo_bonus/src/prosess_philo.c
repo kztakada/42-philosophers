@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 19:32:41 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/04 14:24:00 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:57:15 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@ void	barrier_wait_for_philo(t_philo *philo)
 	// 	- philo->g_dup->start_time * 1000, philo->id);
 	// 子プロセス
 	// 準備完了を通知
-	// handle_e(sem_post(philo->g_dup->barrier.ready_sem), E_SEM_P);
+	handle_e(sem_post(philo->g_dup->barrier.ready_sem), E_SEM_P);
 	// 開始信号を待つ
-	// handle_e(sem_wait(philo->g_dup->barrier.start_sem), E_SEM_W);
+	handle_e(sem_wait(philo->g_dup->barrier.start_sem), E_SEM_W);
 	philo->next_meal_time = calc_initial_eat_at(philo);
 	philo->last_meal_start_time = philo->g_dup->start_time;
 	// セマフォをクローズ
