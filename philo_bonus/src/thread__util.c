@@ -5,38 +5,20 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/03 00:32:19 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 17:22:35 by katakada         ###   ########.fr       */
+/*   Created: 2025/04/06 18:53:45 by katakada          #+#    #+#             */
+/*   Updated: 2025/04/06 19:02:03 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 
-void	sleep_until_next_mealtime(t_lltime next_time_ms)
+void	all_sem_close_at_thread(t_philo *philo)
 {
-	t_lltime	now;
-	t_lltime	next_time_us;
-	t_lltime	sleep_time;
-
-	now = get_time_in_us();
-	next_time_us = next_time_ms * 1000;
-	sleep_time = next_time_us - now;
-	while (sleep_time > 0)
-	{
-		usleep((useconds_t)(sleep_time / 2));
-		now = get_time_in_us();
-		sleep_time = next_time_us - now;
-	}
-}
-
-void	sleep_from_now(t_lltime sleep_time_ms)
-{
-	t_lltime	now;
-	t_lltime	next_time_us;
-
-	now = get_time_in_us();
-	next_time_us = now + (sleep_time_ms * 1000);
-	sleep_until_next_mealtime(next_time_us / 1000);
+	handle_e(sem_close(philo->g_dup->forks), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->waiters), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->can_log), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->can_log_dead), E_SEM_C);
+	handle_e(sem_close(philo->can_touch_me), E_SEM_C);
 }
 
 // 死亡したログを１度だけ表示させる
@@ -47,6 +29,7 @@ static void	unsafe_print_dead_log_only_once(t_lltime death_time_ms,
 
 	handle_e(sem_wait(philo->g_dup->can_log_dead), E_SEM_W);
 	printf("%lld %d died\n", print_time, philo_name(philo->id));
+	all_sem_close_at_thread(philo);
 	exit(EXIT_FAILURE);
 }
 

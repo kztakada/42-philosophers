@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:27:29 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 17:30:11 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 19:02:49 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,5 +61,6 @@ void	*philo_rutine(void *arg)
 		else
 			put_error_exit("Error: Invalid philo state\n");
 	}
+	all_sem_close_at_thread(philo);
 	exit(EXIT_SUCCESS);
 }
