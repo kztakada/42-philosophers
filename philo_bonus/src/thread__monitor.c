@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:28:13 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/07 00:26:15 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:37:51 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	*monitor_rutine(void *arg)
 	while (TRUE)
 	{
 		handle_e(sem_wait(philo->can_touch_me), E_SEM_W);
+		printf("");
 		if (philo->g_dup->is_finished)
 		{
 			handle_e(sem_post(philo->can_touch_me), E_SEM_P);
