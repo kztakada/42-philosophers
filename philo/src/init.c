@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:04:18 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 18:01:40 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,13 @@ static t_lltime	calc_wait_threshold_time_us(t_shared *s)
 {
 	const int	n = s->g_s.num_of_philos;
 	const int	same_time_max_eat = n / 2;
-	const int	offset_unit_time = s->g_s.eating_time / same_time_max_eat;
-	const int	required_offset_time = offset_unit_time * n;
+	int			offset_unit_time;
+	int			required_offset_time;
 
+	if (same_time_max_eat == 0)
+		return (0);
+	offset_unit_time = s->g_s.eating_time / same_time_max_eat;
+	required_offset_time = offset_unit_time * n;
 	if (required_offset_time < (s->g_s.eating_time + s->g_s.sleeping_time))
 		return (0);
 	else
@@ -80,12 +84,14 @@ static t_lltime	calc_optimal_interval_ms(t_shared *s)
 {
 	const int	n = s->g_s.num_of_philos;
 	const int	same_time_max_eat = s->g_s.num_of_philos / 2;
-	const int	offset_unit_time = s->g_s.eating_time / same_time_max_eat;
-	const int	required_offset_time = offset_unit_time * n;
+	int			offset_unit_time;
+	int			required_offset_time;
 
 	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return ((s->g_s.eating_time + s->g_s.sleeping_time));
+	offset_unit_time = s->g_s.eating_time / same_time_max_eat;
+	required_offset_time = offset_unit_time * n;
 	// 人数が2以上の場合＝待機時間必要
 	if (required_offset_time < (s->g_s.eating_time + s->g_s.sleeping_time))
 		return (s->g_s.eating_time + s->g_s.sleeping_time);

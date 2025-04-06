@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 23:38:39 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 18:02:49 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ static t_lltime	calc_initial_eat_at(t_philo *philo)
 	const int	time_to_eat_ms = philo->g_s->eating_time;
 	const int	n = philo->g_s->num_of_philos;
 	const int	same_time_max_eat = n / 2;
-	const int	offset_unit_time = time_to_eat_ms / same_time_max_eat;
-	const int	offset_unit_count = (same_time_max_eat * philo->id) % n;
+	int			offset_unit_time;
+	int			offset_unit_count;
 
 	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return (philo->g_s->start_time);
+	offset_unit_time = time_to_eat_ms / same_time_max_eat;
+	offset_unit_count = (same_time_max_eat * philo->id) % n;
 	return (philo->g_s->start_time + (offset_unit_time * offset_unit_count));
 }
 
