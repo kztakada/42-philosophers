@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:27:29 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/04 15:52:07 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 00:28:56 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,12 +143,51 @@ t_bool	done_sleeping(t_philo *philo)
 	return (TRUE);
 }
 
+static t_lltime	calc_initial_eat_at(t_philo *philo)
+{
+	const int	time_to_eat_ms = philo->g_dup->eating_time;
+	const int	n = philo->g_dup->num_of_philos;
+	const int	same_time_max_eat = n / 2;
+	const int	offset_unit_time = time_to_eat_ms / same_time_max_eat;
+	const int	offset_unit_count = (same_time_max_eat * philo->id) % n;
+
+	// 人数が0か1の場合＝待機時間0
+	if (same_time_max_eat == 0)
+		return (philo->g_dup->start_time);
+	return (philo->g_dup->start_time + (offset_unit_time * offset_unit_count));
+}
+
+void	barrier_wait_for_philo(t_philo *philo)
+{
+	printf("%lld wait child philo_id: %d\n", get_time_in_us(),
+		philo_name(philo->id));
+	// 子プロセス
+	// 準備完了を通知
+	handle_e(sem_post(philo->g_dup->barrier.ready_sem), E_SEM_P);
+	// 開始信号を待つ
+	handle_e(sem_wait(philo->g_dup->barrier.start_sem), E_SEM_W);
+	philo->g_dup->start_time = get_time_in_ms();
+	philo->next_meal_time = calc_initial_eat_at(philo);
+	philo->last_meal_start_time = philo->g_dup->start_time;
+	// セマフォをクローズ
+	handle_e(sem_close(philo->g_dup->barrier.ready_sem), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->barrier.start_sem), E_SEM_C);
+	handle_e(sem_post(philo->can_touch_me), E_SEM_P);
+	handle_e(sem_post(philo->can_touch_me), E_SEM_P);
+	printf("%lld start philo_id: %d\n", get_time_in_us(),
+		philo_name(philo->id));
+	printf("philo_id: %d start_time: %lld  next_meal_time: %lld calc_e:%lld\n",
+		philo_name(philo->id), philo->g_dup->start_time, philo->next_meal_time,
+		philo->next_meal_time - philo->g_dup->start_time);
+}
+
 void	*philo_rutine(void *arg)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	sleep_until_next_mealtime(philo->g_dup->start_time);
+	// sleep_until_next_mealtime(philo->g_dup->start_time);
+	barrier_wait_for_philo(philo);
 	while (safe_is_hungry(philo) == TRUE)
 	{
 		if (safe_is_in_state(philo, THINKING))

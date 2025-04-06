@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/04 16:03:47 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/05 23:23:33 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	app_main(int argc, char **argv)
 	if (init_memory_space(&s) == FALSE)
 		return (1);
 	init_shared_dup(&s);
-	s.g_dup.start_time = get_time_in_ms() + 2000;
+	s.g_dup.start_time = get_time_in_ms();
 	// printf("meal_interval_time: %lld\n", s.g_dup.meal_interval_time);
 	i = 0;
 	while (i < s.g_dup.num_of_philos)
@@ -53,9 +53,18 @@ int	app_main(int argc, char **argv)
 		handle_start_philo_prosess(&s.philos[i]);
 		i++;
 	}
-	i = 0;
 	// 全ての子プロセスが終了するのを待つ
 	barrier_wait_for_main(&s);
+	handle_e(sem_close(s.g_dup.forks), E_SEM_C);
+	handle_e(sem_close(s.g_dup.waiters), E_SEM_C);
+	handle_e(sem_close(s.g_dup.can_log), E_SEM_C);
+	handle_e(sem_close(s.g_dup.can_log_dead), E_SEM_C);
+	i = 0;
+	while (i < s.g_dup.num_of_philos)
+	{
+		handle_e(sem_close(s.philos[i].can_touch_me), E_SEM_C);
+		i++;
+	}
 	handle_terminate_all_philo_prosess(&s);
 	return (0);
 }
