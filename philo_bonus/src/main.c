@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/05 23:23:33 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 15:03:51 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ int	app_main(int argc, char **argv)
 		i++;
 	}
 	handle_terminate_all_philo_prosess(&s);
+	free(s.philos);
 	return (0);
 }
 
