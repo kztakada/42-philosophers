@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 17:50:57 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 19:50:37 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,5 +84,6 @@ void	init_shared_dup(t_shared_dup *s)
 	s->g_dup.can_log = get_sem(G_SEM_LOG, 1);
 	s->g_dup.can_log_dead = get_sem(G_SEM_LOG_DEAD, 1);
 	s->g_dup.start_time = get_time_in_ms() + SYNC_DILAY_TIME_MS;
+	s->g_dup.is_finished = FALSE;
 	init_philo(s);
 }

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 19:00:50 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 19:50:10 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ typedef struct s_g_shared_duplication
 	int					required_meals;
 	t_lltime			meal_interval_time;
 	t_lltime			start_time;
-	t_barrier			barrier;
+	t_bool				is_finished;
 
 	sem_t				*forks;
 	sem_t				*waiters;
