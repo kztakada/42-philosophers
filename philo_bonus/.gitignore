@@ -3,3 +3,5 @@ philo_bonus
 objs/
 
 *.o
+
+semaphore_debug.log

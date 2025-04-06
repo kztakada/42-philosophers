@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 17:05:13 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:50:57 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,14 @@ static t_lltime	calc_initial_eat_at(t_philo *philo)
 	const int	time_to_eat_ms = philo->g_dup->eating_time;
 	const int	n = philo->g_dup->num_of_philos;
 	const int	same_time_max_eat = n / 2;
-	const int	offset_unit_time = time_to_eat_ms / same_time_max_eat;
-	const int	offset_unit_count = (same_time_max_eat * philo->id) % n;
+	int			offset_unit_time;
+	int			offset_unit_count;
 
 	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return (philo->g_dup->start_time);
+	offset_unit_time = time_to_eat_ms / same_time_max_eat;
+	offset_unit_count = (same_time_max_eat * philo->id) % n;
 	return (philo->g_dup->start_time + (offset_unit_time * offset_unit_count));
 }
 
@@ -56,12 +58,14 @@ static t_lltime	calc_optimal_interval_ms(t_shared_dup *s)
 {
 	const int	n = s->g_dup.num_of_philos;
 	const int	same_time_max_eat = s->g_dup.num_of_philos / 2;
-	const int	offset_unit_time = s->g_dup.eating_time / same_time_max_eat;
-	const int	required_offset_time = offset_unit_time * n;
+	int			offset_unit_time;
+	int			required_offset_time;
 
 	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return ((s->g_dup.eating_time + s->g_dup.sleeping_time));
+	offset_unit_time = s->g_dup.eating_time / same_time_max_eat;
+	required_offset_time = offset_unit_time * n;
 	// 人数が2以上の場合＝待機時間必要
 	if (required_offset_time < (s->g_dup.eating_time + s->g_dup.sleeping_time))
 		return (s->g_dup.eating_time + s->g_dup.sleeping_time);
@@ -73,7 +77,10 @@ void	init_shared_dup(t_shared_dup *s)
 {
 	s->g_dup.meal_interval_time = calc_optimal_interval_ms(s);
 	s->g_dup.forks = get_sem(G_SEM_FORKS, s->g_dup.num_of_philos);
-	s->g_dup.waiters = get_sem(G_SEM_WAITERS, s->g_dup.num_of_philos / 2);
+	if (s->g_dup.num_of_philos == 1)
+		s->g_dup.waiters = get_sem(G_SEM_WAITERS, 1);
+	else
+		s->g_dup.waiters = get_sem(G_SEM_WAITERS, s->g_dup.num_of_philos / 2);
 	s->g_dup.can_log = get_sem(G_SEM_LOG, 1);
 	s->g_dup.can_log_dead = get_sem(G_SEM_LOG_DEAD, 1);
 	s->g_dup.start_time = get_time_in_ms() + SYNC_DILAY_TIME_MS;
