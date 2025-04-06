@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:06:41 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:05:53 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	left_philo_id(t_philo *philo)
 		% philo->g_s->num_of_philos);
 }
 
-void	sleep_until_next_mealtime(t_lltime next_time_ms)
+void	sleep_until_next_time(t_lltime next_time_ms)
 {
 	t_lltime	now;
 	t_lltime	next_time_us;
@@ -42,17 +42,7 @@ void	sleep_until_next_mealtime(t_lltime next_time_ms)
 	}
 }
 
-void	sleep_from_now(t_lltime sleep_time_ms)
-{
-	t_lltime	now;
-	t_lltime	next_time_us;
-
-	now = get_time_in_us();
-	next_time_us = now + (sleep_time_ms * 1000);
-	sleep_until_next_mealtime(next_time_us / 1000);
-}
-
-t_bool	print_log_if_alive(t_philo *philo, char *msg)
+t_bool	print_log_if_alive(t_philo *philo, char *msg, t_lltime *store_time)
 {
 	t_lltime	now_us;
 	t_lltime	now_ms;
@@ -66,6 +56,8 @@ t_bool	print_log_if_alive(t_philo *philo, char *msg)
 		return (FALSE);
 	}
 	now_ms = now_us / 1000;
+	if (store_time != NULL)
+		*store_time = now_ms;
 	time_stamp = now_ms - philo->g_s->start_time;
 	if (!philo->g_s->monitor.is_finished)
 	{

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 18:01:40 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 23:58:35 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void	init_philos(t_shared *s, pthread_mutex_t *forks)
 		s->philos[i].state = THINKING;
 		s->philos[i].meals_eaten = 0;
 		s->philos[i].wait_start_us = 0;
+		s->philos[i].last_sleep_start_time = 0;
 		s->philos[i].left_fork = &forks[left_fork(&s->philos[i])];
 		s->philos[i].right_fork = &forks[right_fork(&s->philos[i])];
 		s->philos[i].other_philos = s->philos;

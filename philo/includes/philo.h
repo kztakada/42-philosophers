@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 15:54:42 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:06:04 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ struct					s_phiro
 	int					meals_eaten;
 	t_lltime			wait_start_us;
 	t_lltime			last_meal_start_time;
+	t_lltime			last_sleep_start_time;
 	t_lltime			next_meal_time;
 	pthread_mutex_t		*left_fork;
 	pthread_mutex_t		*right_fork;
@@ -137,12 +138,12 @@ t_bool					is_still_hungry(t_philo *philo);
 t_bool					done_sleeping(t_philo *philo);
 
 // thread__philo_util.c
-void					sleep_until_next_mealtime(t_lltime next_time);
-void					sleep_from_now(t_lltime sleep_time_ms);
+void					sleep_until_next_time(t_lltime next_time);
 void					barrier_wait_for_philo(t_philo *philo);
 int						right_philo_id(t_philo *philo);
 int						left_philo_id(t_philo *philo);
-t_bool					print_log_if_alive(t_philo *philo, char *msg);
+t_bool					print_log_if_alive(t_philo *philo, char *msg,
+							t_lltime *store_time);
 
 // thread__philo.c
 void					*philosopher_routine(void *arg);
