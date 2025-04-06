@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 19:50:37 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:22:24 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ static void	init_philo(t_shared_dup *s)
 		s->philos[i].id = i;
 		s->philos[i].state = THINKING;
 		s->philos[i].meals_eaten = 0;
+		s->philos[i].last_sleep_start_time = 0;
 		s->philos[i].can_touch_me = get_sem(P_SEM_CAN_ACTION, 1);
 		s->philos[i].g_dup = &s->g_dup;
 		s->philos[i].next_meal_time = calc_initial_eat_at(&s->philos[i]);

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:27:29 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:53:56 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:26:15 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	*philo_rutine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	sleep_until_next_mealtime(philo->g_dup->start_time);
+	sleep_until_next_time(philo->g_dup->start_time);
 	while (safe_is_hungry(philo) == TRUE)
 	{
 		if (safe_is_in_state(philo, THINKING))

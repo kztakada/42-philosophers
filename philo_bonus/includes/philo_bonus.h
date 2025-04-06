@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 23:39:18 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:27:01 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ struct					s_philo
 	enum e_philo_state	state;
 	int					meals_eaten;
 	t_lltime			last_meal_start_time;
+	t_lltime			last_sleep_start_time;
 	t_lltime			next_meal_time;
 
 	pthread_t			main;
@@ -150,10 +151,6 @@ void					done_sleeping(t_philo *philo);
 // thread__philo.c
 void					*philo_rutine(void *arg);
 
-// thread__sleep.c
-void					sleep_until_next_mealtime(t_lltime next_time_ms);
-void					sleep_from_now(t_lltime sleep_time_ms);
-
 // thread__util.c
 int						philo_name(int philo_id);
 void					all_sem_close_at_thread(t_philo *philo);
@@ -162,5 +159,6 @@ t_lltime				unsafe_get_last_alive_time(t_philo *philo);
 // time__util.c
 t_lltime				get_time_in_ms(void);
 t_lltime				get_time_in_us(void);
+void					sleep_until_next_time(t_lltime next_time_ms);
 
 #endif

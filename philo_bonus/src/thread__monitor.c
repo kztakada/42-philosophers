@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:28:13 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:53:12 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:26:15 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	*monitor_rutine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	sleep_until_next_mealtime(philo->g_dup->start_time);
+	sleep_until_next_time(philo->g_dup->start_time);
 	while (TRUE)
 	{
 		handle_e(sem_wait(philo->can_touch_me), E_SEM_W);

@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 17:27:14 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:58:10 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:29:01 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	done_thinking(t_philo *philo)
 	// 考え始める
 	p_unsafe_print_log_if_alive(philo, "is thinking", NULL);
 	next_meal_time = philo->next_meal_time;
-	sleep_until_next_mealtime(next_meal_time);
+	sleep_until_next_time(next_meal_time);
 	// １本目フォーク取得開始
 	handle_e(sem_wait(philo->g_dup->waiters), E_SEM_W);
 	handle_e(sem_wait(philo->g_dup->forks), E_SEM_W);
@@ -70,7 +70,7 @@ void	done_eating(t_philo *philo)
 	handle_e(sem_post(philo->can_touch_me), E_SEM_P);
 	philo->next_meal_time += philo->g_dup->meal_interval_time;
 	eating_time = philo->g_dup->eating_time;
-	sleep_from_now(eating_time);
+	sleep_until_next_time(philo->last_meal_start_time + eating_time);
 	// 食後の処理
 	handle_e(sem_post(philo->g_dup->forks), E_SEM_P);
 	handle_e(sem_post(philo->g_dup->forks), E_SEM_P);
@@ -82,9 +82,10 @@ void	done_sleeping(t_philo *philo)
 	int	sleeping_time;
 
 	// 睡眠開始
-	p_unsafe_print_log_if_alive(philo, "is sleeping", NULL);
+	p_unsafe_print_log_if_alive(philo, "is sleeping",
+		&philo->last_sleep_start_time);
 	sleeping_time = philo->g_dup->sleeping_time;
-	sleep_from_now(sleeping_time);
+	sleep_until_next_time(philo->last_sleep_start_time + sleeping_time);
 	// 睡眠終了
 	safe_change_state(philo, THINKING);
 }
