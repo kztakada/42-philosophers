@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:27:51 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 15:03:51 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 16:04:48 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ int	app_main(int argc, char **argv)
 	if (init_memory_space(&s) == FALSE)
 		return (1);
 	init_shared_dup(&s);
-	s.g_dup.start_time = get_time_in_ms();
 	// printf("meal_interval_time: %lld\n", s.g_dup.meal_interval_time);
 	i = 0;
 	while (i < s.g_dup.num_of_philos)
@@ -54,7 +53,7 @@ int	app_main(int argc, char **argv)
 		i++;
 	}
 	// 全ての子プロセスが終了するのを待つ
-	barrier_wait_for_main(&s);
+	// barrier_wait_for_main(&s);
 	handle_e(sem_close(s.g_dup.forks), E_SEM_C);
 	handle_e(sem_close(s.g_dup.waiters), E_SEM_C);
 	handle_e(sem_close(s.g_dup.can_log), E_SEM_C);

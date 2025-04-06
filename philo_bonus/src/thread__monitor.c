@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:28:13 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/05 23:55:56 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 16:13:49 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,12 @@ void	*monitor_rutine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	// sleep_until_next_mealtime(philo->g_dup->start_time);
-	printf("%lld wait monitor id:%d\n", get_time_in_us(),
-		philo_name(philo->id));
-	handle_e(sem_wait(philo->can_touch_me), E_SEM_W);
-	printf("%lld start monitor id:%d\n", get_time_in_us(),
-		philo_name(philo->id));
+	sleep_until_next_mealtime(philo->g_dup->start_time);
+	// printf("%lld wait monitor id:%d\n", get_time_in_us(),
+	// 	philo_name(philo->id));
+	// handle_e(sem_wait(philo->can_touch_me), E_SEM_W);
+	// printf("%lld start monitor id:%d\n", get_time_in_us(),
+	// 	philo_name(philo->id));
 	while (TRUE)
 	{
 		handle_e_m(sem_wait(philo->can_touch_me), E_SEM_W);
