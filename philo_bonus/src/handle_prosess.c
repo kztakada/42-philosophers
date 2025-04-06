@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 19:10:53 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 19:30:13 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 16:55:32 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,10 @@ void	handle_terminate_all_philo_prosess(t_shared_dup *s)
 		if (returned_child_pid > 0 && WIFEXITED(status)
 			&& WEXITSTATUS(status) == EXIT_SUCCESS)
 		{
-			// TODO: ログ出力用のセマフォを解除（sem_post）をここに追加する
 			exit_count++;
-			printf("Child process %d exited successfully\n",
-				returned_child_pid);
 			continue ;
 		}
 		kill_all_philos(s);
 		break ;
 	}
-	printf("All child processes exited\n");
 }

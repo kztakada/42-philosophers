@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 19:32:41 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 15:58:21 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:06:19 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void	exec_philo_prosess(t_philo *philo)
 {
-	// pthread_mutex_init(&philo->m_mutex, NULL);
 	if (pthread_create(&philo->main, NULL, philo_rutine, philo) != 0)
 		put_error_exit("Error: philo pthread_create\n");
 	if (pthread_create(&philo->monitor, NULL, monitor_rutine, philo) != 0)

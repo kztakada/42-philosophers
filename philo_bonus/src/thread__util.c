@@ -6,17 +6,11 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:32:19 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/04 14:09:03 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:22:35 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-
-// philosopherの名前を取得する
-int	philo_name(int philo_id)
-{
-	return (philo_id + 1);
-}
 
 void	sleep_until_next_mealtime(t_lltime next_time_ms)
 {

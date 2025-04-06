@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/04 14:22:18 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:32:11 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,9 @@
 # define G_SEM_LOG_DEAD "/can_log_dead"
 # define P_SEM_CAN_ACTION "/can_touch_me"
 
+# define SYNC_DILAY_TIME_MS 2000
+# define MONITOR_INTERVAL_US 1000
+
 typedef long long		t_lltime;
 typedef struct s_philo	t_philo;
 
@@ -74,12 +77,8 @@ typedef struct s_g_shared_duplication
 	t_lltime			eating_time;
 	t_lltime			sleeping_time;
 	int					required_meals;
-	// pthread_mutex_t		g_mutex;
-	// t_bool				*fork_in_use;
 	t_lltime			meal_interval_time;
-	// t_lltime			wait_threshold_us;
 	t_lltime			start_time;
-	// t_monitor			monitor;
 	t_barrier			barrier;
 
 	sem_t				*forks;
@@ -119,6 +118,9 @@ void					handle_e(int func_result, char *err_msg);
 void					handle_start_philo_prosess(t_philo *philo);
 void					handle_terminate_all_philo_prosess(t_shared_dup *s);
 
+// init__util.c
+sem_t					*get_sem(const char *sem_name, int sem_count);
+
 // init.c
 t_bool					init_memory_space(t_shared_dup *s);
 void					init_shared_dup(t_shared_dup *s);
@@ -140,11 +142,18 @@ void					exec_philo_prosess(t_philo *philo);
 // thread__monitor.c
 void					*monitor_rutine(void *arg);
 
+// thread__philo__util.c
+int						philo_name(int philo_id);
+
+// thread__philo_loop_actions.c
+t_bool					done_thinking(t_philo *philo);
+t_bool					done_eating(t_philo *philo);
+t_bool					done_sleeping(t_philo *philo);
+
 // thread__philo.c
 void					*philo_rutine(void *arg);
 
 // thread__util.c
-int						philo_name(int philo_id);
 void					sleep_until_next_mealtime(t_lltime next_time_ms);
 void					sleep_from_now(t_lltime sleep_time_ms);
 t_lltime				unsafe_get_last_alive_time(t_philo *philo);

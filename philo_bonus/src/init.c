@@ -6,12 +6,11 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 16:14:25 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 17:05:13 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
-#define OWNER_ONLY_WRITE 0644
 
 t_bool	init_memory_space(t_shared_dup *s)
 {
@@ -20,24 +19,6 @@ t_bool	init_memory_space(t_shared_dup *s)
 		return (put_error_exit("Error: malloc error\n"), FALSE);
 	return (TRUE);
 }
-
-static sem_t	*get_sem(const char *sem_name, int sem_count)
-{
-	sem_t	*sem;
-
-	sem_unlink(sem_name);
-	sem = sem_open(sem_name, O_CREAT | O_EXCL, OWNER_ONLY_WRITE, sem_count);
-	if (sem == SEM_FAILED)
-		put_error_exit("Error: sem_open\n");
-	handle_e(sem_unlink(sem_name), E_SEM_U);
-	return (sem);
-}
-
-// static void	init_barrier_sem(t_shared_dup *s)
-// {
-// 	s->g_dup.barrier.ready_sem = get_sem(B_SEM_READY, 0);
-// 	s->g_dup.barrier.start_sem = get_sem(B_SEM_START, 0);
-// }
 
 static t_lltime	calc_initial_eat_at(t_philo *philo)
 {
@@ -95,7 +76,6 @@ void	init_shared_dup(t_shared_dup *s)
 	s->g_dup.waiters = get_sem(G_SEM_WAITERS, s->g_dup.num_of_philos / 2);
 	s->g_dup.can_log = get_sem(G_SEM_LOG, 1);
 	s->g_dup.can_log_dead = get_sem(G_SEM_LOG_DEAD, 1);
-	s->g_dup.start_time = get_time_in_ms() + 2000;
-	// init_barrier_sem(s);
+	s->g_dup.start_time = get_time_in_ms() + SYNC_DILAY_TIME_MS;
 	init_philo(s);
 }
