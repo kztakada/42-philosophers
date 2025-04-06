@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:50:44 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 23:39:18 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,9 +142,6 @@ void					exec_philo_prosess(t_philo *philo);
 // thread__monitor.c
 void					*monitor_rutine(void *arg);
 
-// thread__philo__util.c
-int						philo_name(int philo_id);
-
 // thread__philo_loop_actions.c
 void					done_thinking(t_philo *philo);
 void					done_eating(t_philo *philo);
@@ -158,6 +155,7 @@ void					sleep_until_next_mealtime(t_lltime next_time_ms);
 void					sleep_from_now(t_lltime sleep_time_ms);
 
 // thread__util.c
+int						philo_name(int philo_id);
 void					all_sem_close_at_thread(t_philo *philo);
 t_lltime				unsafe_get_last_alive_time(t_philo *philo);
 

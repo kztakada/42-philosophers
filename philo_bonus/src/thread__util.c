@@ -6,11 +6,17 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:53:45 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:53:29 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 23:38:47 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
+
+// philosopherの名前を取得する
+int	philo_name(int philo_id)
+{
+	return (philo_id + 1);
+}
 
 void	all_sem_close_at_thread(t_philo *philo)
 {
