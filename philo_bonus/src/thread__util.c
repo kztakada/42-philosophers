@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:53:45 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/07 00:40:54 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/07 00:51:53 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static void	unsafe_print_dead_log_only_once(t_lltime death_time_ms,
 
 	handle_e(sem_wait(philo->g_dup->can_log_dead), E_SEM_W);
 	printf("%lld %d died\n", print_time, philo_name(philo->id));
-	all_sem_close_at_thread(philo);
+	// all_sem_close_at_thread(philo);
 	exit(EXIT_FAILURE);
 }
 
