@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 00:27:29 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:28:28 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 20:53:56 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,28 +35,6 @@ static t_bool	safe_is_in_state(t_philo *philo, enum e_philo_state state)
 	return (result);
 }
 
-static t_bool	done_task(t_philo *philo)
-{
-	if (safe_is_in_state(philo, THINKING))
-	{
-		if (done_thinking(philo) == FALSE)
-			return (FALSE);
-	}
-	else if (safe_is_in_state(philo, EATING))
-	{
-		if (done_eating(philo) == FALSE)
-			return (FALSE);
-	}
-	else if (safe_is_in_state(philo, SLEEPING))
-	{
-		if (done_sleeping(philo) == FALSE)
-			return (FALSE);
-	}
-	else
-		put_error_exit("Error: Invalid philo state\n");
-	return (TRUE);
-}
-
 void	*philo_rutine(void *arg)
 {
 	t_philo	*philo;
@@ -65,9 +43,16 @@ void	*philo_rutine(void *arg)
 	sleep_until_next_mealtime(philo->g_dup->start_time);
 	while (safe_is_hungry(philo) == TRUE)
 	{
-		if (done_task(philo) == FALSE)
-			break ;
+		if (safe_is_in_state(philo, THINKING))
+			done_thinking(philo);
+		else if (safe_is_in_state(philo, EATING))
+			done_eating(philo);
+		else if (safe_is_in_state(philo, SLEEPING))
+			done_sleeping(philo);
+		else
+			put_error_exit("Error: Invalid philo state\n");
 	}
-	all_sem_close_at_thread(philo);
+	if (philo->g_dup->is_finished == FALSE)
+		all_sem_close_at_thread(philo);
 	return (NULL);
 }

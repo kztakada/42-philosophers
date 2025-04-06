@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:53:45 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 20:24:17 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/06 20:53:29 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,15 @@
 
 void	all_sem_close_at_thread(t_philo *philo)
 {
-	if (philo->g_dup->is_finished == FALSE)
-	{
-		handle_e(sem_wait(philo->can_touch_me), E_SEM_W);
-		philo->g_dup->is_finished = TRUE;
-		handle_e(sem_post(philo->can_touch_me), E_SEM_P);
-		usleep(10000);
-		handle_e(sem_close(philo->g_dup->forks), E_SEM_C);
-		handle_e(sem_close(philo->g_dup->waiters), E_SEM_C);
-		handle_e(sem_close(philo->g_dup->can_log), E_SEM_C);
-		handle_e(sem_close(philo->g_dup->can_log_dead), E_SEM_C);
-		handle_e(sem_close(philo->can_touch_me), E_SEM_C);
-	}
+	handle_e(sem_wait(philo->can_touch_me), E_SEM_W);
+	philo->g_dup->is_finished = TRUE;
+	handle_e(sem_post(philo->can_touch_me), E_SEM_P);
+	usleep(10000);
+	handle_e(sem_close(philo->g_dup->forks), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->waiters), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->can_log), E_SEM_C);
+	handle_e(sem_close(philo->g_dup->can_log_dead), E_SEM_C);
+	handle_e(sem_close(philo->can_touch_me), E_SEM_C);
 }
 
 // 死亡したログを１度だけ表示させる
