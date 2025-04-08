@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 16:57:52 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/08 15:40:03 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:00:46 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,12 @@ t_bool	take_forks(t_philo *philo)
 	}
 	else
 	{
-		// 1本目を取得する
 		pthread_mutex_lock(fork_1st(philo));
 		if (print_log_if_alive(philo, "has taken a fork", NULL) == FALSE)
 		{
 			pthread_mutex_unlock(fork_1st(philo));
 			return (FALSE);
 		}
-		// 両方のフォークを取得できた場合
 		pthread_mutex_lock(fork_2nd(philo));
 		if (print_log_if_alive(philo, "has taken a fork", NULL) == FALSE)
 		{
@@ -70,11 +68,9 @@ t_bool	try_to_eat(t_philo *philo)
 {
 	t_bool	result;
 
-	// 優先度確認ブロック
 	if (has_first_priority(philo) == FALSE)
 		return (FALSE);
 	result = FALSE;
-	// フォーク取得ブロック
 	if (reserve_forks(philo))
 		result = take_forks(philo);
 	if (result == TRUE)

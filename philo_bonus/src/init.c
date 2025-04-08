@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 16:28:21 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/07 00:22:24 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:54:37 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ static t_lltime	calc_initial_eat_at(t_philo *philo)
 	int			offset_unit_time;
 	int			offset_unit_count;
 
-	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return (philo->g_dup->start_time);
 	offset_unit_time = time_to_eat_ms / same_time_max_eat;
@@ -62,12 +61,10 @@ static t_lltime	calc_optimal_interval_ms(t_shared_dup *s)
 	int			offset_unit_time;
 	int			required_offset_time;
 
-	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return ((s->g_dup.eating_time + s->g_dup.sleeping_time));
 	offset_unit_time = s->g_dup.eating_time / same_time_max_eat;
 	required_offset_time = offset_unit_time * n;
-	// 人数が2以上の場合＝待機時間必要
 	if (required_offset_time < (s->g_dup.eating_time + s->g_dup.sleeping_time))
 		return (s->g_dup.eating_time + s->g_dup.sleeping_time);
 	else

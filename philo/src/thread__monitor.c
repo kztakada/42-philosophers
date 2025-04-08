@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:21:02 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:06:15 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:00:09 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,10 @@ static void	monitor_loop(t_shared *s, t_bool is_anyone_dead,
 		while (i < s->g_s.num_of_philos)
 		{
 			pthread_mutex_lock(&s->philos[i].p_mutex);
-			// 食事回数が設定されているか or 指定回数以内かを確認
 			if (s->g_s.required_meals < 0
 				|| s->philos[i].meals_eaten < s->g_s.required_meals)
 			{
 				can_still_eat = TRUE;
-				// 死亡確認
 				pthread_mutex_lock(&s->g_s.monitor.m_mutex);
 				if (m_unsafe_get_last_alive_time_us(&s->philos[i]) == -1)
 					is_anyone_dead = TRUE;

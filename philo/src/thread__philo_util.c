@@ -6,19 +6,17 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:44:35 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/07 00:05:53 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:01:02 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// 右隣の哲学者のidを取得する関数
 int	right_philo_id(t_philo *philo)
 {
 	return ((philo->id + 1) % philo->g_s->num_of_philos);
 }
 
-// 左隣の哲学者のidを取得する関数
 int	left_philo_id(t_philo *philo)
 {
 	return ((philo->id + philo->g_s->num_of_philos - 1)

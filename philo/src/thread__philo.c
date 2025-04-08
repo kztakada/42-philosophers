@@ -6,13 +6,12 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 17:43:00 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 18:02:49 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:01:24 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// バリア待機させる関数 for Pilo
 void	barrier_wait_for_philo(t_philo *philo)
 {
 	t_barrier		*barrier;
@@ -38,7 +37,6 @@ static t_lltime	calc_initial_eat_at(t_philo *philo)
 	int			offset_unit_time;
 	int			offset_unit_count;
 
-	// 人数が0か1の場合＝待機時間0
 	if (same_time_max_eat == 0)
 		return (philo->g_s->start_time);
 	offset_unit_time = time_to_eat_ms / same_time_max_eat;
@@ -76,9 +74,7 @@ void	*philosopher_routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *)arg;
-	// バリア待機
 	barrier_wait_for_philo(philo);
-	// 次回の食事時間を初期化
 	pthread_mutex_lock(&philo->p_mutex);
 	philo->next_meal_time = calc_initial_eat_at(philo);
 	pthread_mutex_unlock(&philo->p_mutex);

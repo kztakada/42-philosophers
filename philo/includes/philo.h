@@ -6,14 +6,13 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/08 15:38:18 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:59:02 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# include "./for_test.h" // for test
 # include <limits.h>
 # include <pthread.h>
 # include <stdio.h>

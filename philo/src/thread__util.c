@@ -6,19 +6,17 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/08 16:13:41 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 19:01:47 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-// philosopherの名前を取得する
 int	philo_name(int philo_id)
 {
 	return (philo_id + 1);
 }
 
-// バリア待機させる関数
 void	barrier_wait(t_barrier *barrier)
 {
 	pthread_mutex_lock(&barrier->b_mutex);
@@ -32,12 +30,10 @@ void	barrier_wait(t_barrier *barrier)
 			pthread_mutex_unlock(&barrier->b_mutex);
 			break ;
 		}
-		// usleep(100);
 		pthread_mutex_unlock(&barrier->b_mutex);
 	}
 }
 
-// 死亡したログを１度だけ表示させる
 static void	m_unsafe_print_dead_log_only_once(t_lltime death_time_ms,
 		t_philo *philo)
 {
@@ -76,7 +72,6 @@ t_lltime	m_unsafe_get_last_alive_time_us(t_philo *philo)
 	survival_time = now_ms - philo->last_meal_start_time;
 	if (survival_time > philo->g_s->survival_time_per_meal)
 	{
-		// 死亡ログを出力していない場合、死亡ログを出力する
 		m_unsafe_print_dead_log_only_once(now_ms, philo);
 		return (-1);
 	}

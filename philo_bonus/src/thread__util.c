@@ -6,14 +6,13 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/06 18:53:45 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/08 18:33:35 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:55:51 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo_bonus.h"
 #define SYNC_WAIT_TIME_US 10000
 
-// philosopherの名前を取得する
 int	philo_name(int philo_id)
 {
 	return (philo_id + 1);
@@ -34,7 +33,6 @@ void	all_sem_close_at_thread(t_philo *philo)
 	handle_e(sem_close(philo->can_touch_me), E_SEM_C);
 }
 
-// 死亡したログを１度だけ表示させる
 static void	unsafe_print_dead_log_only_once(t_lltime death_time_ms,
 		t_philo *philo)
 {
@@ -69,7 +67,6 @@ t_lltime	unsafe_get_last_alive_time(t_philo *philo)
 	{
 		if (unsafe_is_hungry(philo) == TRUE)
 		{
-			// 死亡ログを出力していない場合、死亡ログを出力する
 			unsafe_print_dead_log_only_once(now, philo);
 		}
 		return (-1);

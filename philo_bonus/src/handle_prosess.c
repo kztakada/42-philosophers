@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/02 19:10:53 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 16:55:32 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 18:54:11 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,6 @@ static void	kill_all_philos(t_shared_dup *s)
 	}
 }
 
-// WIFEXITED(status)
-// これは子プロセスが正常に終了したかどうかを確認するマクロです。子プロセスが exit() や return などで通常終了した場合に真となります。一方、シグナル（SIGKILL や SIGSEGV など）によって終了した場合は偽となります。
-// WEXITSTATUS(status) == EXIT_SUCCESS
-// WIFEXITED が真の場合、この部分は子プロセスの終了コードが EXIT_SUCCESS（通常は0）と等しいかを確認します。
 void	handle_terminate_all_philo_prosess(t_shared_dup *s)
 {
 	int		status;
