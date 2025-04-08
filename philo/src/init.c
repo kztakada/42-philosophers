@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/30 00:13:04 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/06 23:58:35 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:05:51 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	init_philos(t_shared *s, pthread_mutex_t *forks)
 		s->philos[i].left_fork = &forks[left_fork(&s->philos[i])];
 		s->philos[i].right_fork = &forks[right_fork(&s->philos[i])];
 		s->philos[i].other_philos = s->philos;
+		s->g_s.fork_in_use[i] = FALSE;
 		i++;
 	}
 }

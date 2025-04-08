@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/08 15:41:59 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 16:13:41 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	barrier_wait(t_barrier *barrier)
 	pthread_mutex_lock(&barrier->b_mutex);
 	barrier->arrived_count++;
 	pthread_mutex_unlock(&barrier->b_mutex);
-	while (1)
+	while (TRUE)
 	{
 		pthread_mutex_lock(&barrier->b_mutex);
 		if (barrier->arrived_count == barrier->thread_count)
