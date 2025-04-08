@@ -6,7 +6,7 @@
 #    By: katakada <katakada@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/16 21:21:00 by katakada          #+#    #+#              #
-#    Updated: 2025/04/07 00:31:36 by katakada         ###   ########.fr        #
+#    Updated: 2025/04/08 18:30:02 by katakada         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC				=	cc
 DEBUG_CC		=	cc -D I -g -fsanitize=thread 
 
 CFLAGS			=	-Wall -Wextra -Werror
-DEBUG_CFLAGS	=	-Wall -Wextra -Werror-Weverything -Wno-padded -Wno-strict-prototypes -Wno-packed -Wno-cast-qual
+DEBUG_CFLAGS	=	-Wall -Wextra -Werror
 INCS			=	-I includes/
 
 SRC_PATH		=	src/
