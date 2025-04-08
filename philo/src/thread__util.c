@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 20:26:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/02 15:54:42 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:41:59 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ void	barrier_wait(t_barrier *barrier)
 			pthread_mutex_unlock(&barrier->b_mutex);
 			break ;
 		}
+		// usleep(100);
 		pthread_mutex_unlock(&barrier->b_mutex);
 	}
 }

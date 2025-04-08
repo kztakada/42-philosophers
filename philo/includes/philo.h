@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/18 16:26:56 by katakada          #+#    #+#             */
-/*   Updated: 2025/04/07 00:06:04 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:38:18 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,5 +167,7 @@ t_lltime				get_time_in_us(void);
 // util.c
 int						left_fork(t_philo *philo);
 int						right_fork(t_philo *philo);
+pthread_mutex_t			*fork_1st(t_philo *philo);
+pthread_mutex_t			*fork_2nd(t_philo *philo);
 
 #endif

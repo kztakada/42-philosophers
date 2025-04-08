@@ -6,7 +6,7 @@
 /*   By: katakada <katakada@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/25 19:41:59 by katakada          #+#    #+#             */
-/*   Updated: 2025/03/31 01:08:43 by katakada         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:09:04 by katakada         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	create_threads(t_shared *s, pthread_t *monitor_thread,
 	pthread_join(*monitor_thread, NULL);
 }
 
-int	app_main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
 	t_shared		s;
 	pthread_mutex_t	*forks;
@@ -53,33 +53,3 @@ int	app_main(int argc, char *argv[])
 	all_free(&s, forks, philo_thread);
 	return (0);
 }
-
-#ifndef TEST
-
-int	main(int argc, char *argv[])
-{
-	return (app_main(argc, argv));
-}
-#endif // TEST
-
-// // 独自のテストブロック
-// all_finished = true;
-// if (REQUIRED_MEALS > 0)
-// {
-// 	for (int i = 0; i < NUM_PHILOSOPHERS; i++)
-// 	{
-// 		if (s.philos[i].meals_eaten < REQUIRED_MEALS)
-// 		{
-// 			all_finished = FALSE;
-// 			break ;
-// 		}
-// 	}
-// 	if (all_finished)
-// 	{
-// 		printf("All philosophers have finished their meals successfully!\n");
-// 	}
-// 	else
-// 	{
-// 		printf("Some philosophers couldn't finish their meals.\n");
-// 	}
-// }
